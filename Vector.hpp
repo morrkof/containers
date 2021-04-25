@@ -6,18 +6,18 @@ class vector
 {
 private:
 	// this is alias
-    typedef T value_type; // use in constructor
+    typedef T value_type; // тип элемента
     typedef Alloc allocator_type; // use in constructor
-    typedef reference allocator_type::reference; // use in front
-    typedef const_reference allocator_type::const_reference; // use in front
+    typedef reference allocator_type::reference; // то же что и value_type&
+    typedef const_reference allocator_type::const_reference; // const value_type&
 	typedef  pointer allocator_type::pointer;
     typedef const_pointer allocator_type::const_pointer;
-    typedef iterator ; // struct random_access_iterator_tag to value_type
+    typedef iterator ; // struct random_access_iterator_tag to value_type  тип итератора для контейнера данного типа
     typedef const_iterator ; // struct random_access_iterator_tag to const value_type
     typedef reverse_iterator reverse_iterator<iterator>; // template <class Iterator> class reverse_iterator;
     typedef const_reverse_iterator reverse_iterator<const_iterator>;
-    typedef int difference_type; // iterator_traits<iterator>::difference_type
-    typedef unsigned int size_type; // return of capacity
+    typedef int difference_type; // iterator_traits<iterator>::difference_type  значение разницы между двумя итераторами
+    typedef unsigned int size_type; // значение размера наибольшего возможного контейнера данного типа
 public:
 
     /* CONSTRUCTORS && DESTRUCTOR*/
