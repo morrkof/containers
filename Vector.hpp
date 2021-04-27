@@ -5,19 +5,23 @@ template <class T, class Alloc = std::allocator<T> >
 class vector
 {
 private:
-	// this is alias
-    typedef T value_type; // use in constructor
-    typedef Alloc allocator_type; // use in constructor
-    typedef reference allocator_type::reference; // use in front
-    typedef const_reference allocator_type::const_reference; // use in front
-	typedef  pointer allocator_type::pointer;
-    typedef const_pointer allocator_type::const_pointer;
-    typedef iterator ; // struct random_access_iterator_tag to value_type
-    typedef const_iterator ; // struct random_access_iterator_tag to const value_type
-    typedef reverse_iterator reverse_iterator<iterator>; // template <class Iterator> class reverse_iterator;
-    typedef const_reverse_iterator reverse_iterator<const_iterator>;
-    typedef int difference_type; // iterator_traits<iterator>::difference_type
-    typedef unsigned int size_type; // return of capacity
+	T * _data;
+	int _capacity;
+	int _size;
+// public:
+// 	// this is alias
+//     typedef T value_type; // use in constructor
+//     typedef Alloc allocator_type; // use in constructor
+//     typedef reference allocator_type::reference; // use in front
+//     typedef const_reference allocator_type::const_reference; // use in front
+// 	   typedef  pointer allocator_type::pointer;
+//     typedef const_pointer allocator_type::const_pointer;
+//     typedef iterator ; // struct random_access_iterator_tag to value_type
+//     typedef const_iterator ; // struct random_access_iterator_tag to const value_type
+//     typedef reverse_iterator reverse_iterator<iterator>; // template <class Iterator> class reverse_iterator;
+//     typedef const_reverse_iterator reverse_iterator<const_iterator>;
+//     typedef int difference_type; // iterator_traits<iterator>::difference_type
+//     typedef unsigned int size_type; // return of capacity
 public:
 
     /* CONSTRUCTORS && DESTRUCTOR*/
@@ -30,7 +34,7 @@ public:
     template <class InputIterator>
     vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()); // range constructor, including first excluding last
 
-    vector (const vector& x); // copy constructor
+    vector (const vector& x) { *this = x; } // copy constructor
 
     ~vector();  // destroy elements and deallocate capacity
 
@@ -50,12 +54,12 @@ public:
 
      /* CAPACITY */
 
-    size_type size() const; // return number of elements (not equal capacity), size_type is alias for unsigned int
+    size_type size() const { return _size; } // return number of elements (not equal capacity), size_type is alias for unsigned int
     size_type max_size() const; // return maximum number of elements (potential), in reference is 1073741823
     void resize (size_type n, value_type val = value_type()); // change size, if n < container reduces and destroy other elements, 
 	// if n > container expanded, if n > capacity reallocate storage
-    size_type capacity() const; // ret size of allocated storage capacity (number elements), size_type = unsigned int. capacity can change by reserve
-    bool empty() const; // if size = 0 return true, else return false
+    size_type capacity() const { return _capacity; } // ret size of allocated storage capacity (number elements), size_type = unsigned int. capacity can change by reserve
+    bool empty() const { return (_size == 0 ? 1 : 0); } // if size = 0 return true, else return false
     void reserve (size_type n); // request change of capacity, if n < current capacity, do nothing
 
 
