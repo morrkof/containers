@@ -81,15 +81,21 @@ public:
 //     void resize (size_type n, value_type val = value_type()); // change size, if n < container reduces and destroy other elements, 
 // 	// if n > container expanded, if n > capacity reallocate storage
     size_type capacity() const { return _capacity; }
-//     bool empty() const { return (_size == 0 ? 1 : 0); } // if size = 0 return true, else return false
+    bool empty() const { return (_size == 0 ? 1 : 0); }
 //     void reserve (size_type n); // request change of capacity, if n < current capacity, do nothing
 
 
 //     /* ELEMENT ACCESS */
 
     reference operator[] (size_type n) { return _data[n]; } // return reference to element at position n
-//     const_reference operator[] (size_type n) const;
-//     reference at (size_type n); // same as [], but can throw exception if out of range
+    // const_reference operator[] (size_type n) const { return const _data[n]; }
+    reference at (size_type n) // same as [], but can throw exception if out of range
+	{
+		if(n < 0 || n > _size)
+			throw std::out_of_range("blabla");
+		else
+			return _data[n];
+	}
 //     const_reference at (size_type n) const;
 //     reference front(); // return reference to first element, UB if empty vector. reference is alias
 //     const_reference front() const; 
@@ -102,7 +108,40 @@ public:
 //     template <class InputIterator>
 //     void assign (InputIterator first, InputIterator last);	// replace content on range (destroy all old elements)
 //     void assign (size_type n, const value_type& val); // replace content of n elements, each value is val
-//     void push_back (const value_type& val); // add new element at the end, increase container size by 1
+
+	void push_back (const value_type& val) // add new element at the end, increase container size by 1
+    {
+    	if (_size < _capacity)
+    	{
+        	_allocator.construct(_data + _size, val);
+        	_size++;
+        	return;
+      	}
+      	else if (_capacity)
+      	{
+        	T *newdata = _allocator.allocate(_capacity * 2);
+        	for(int i = 0; i < _capacity; i++) {
+				_allocator.construct(newdata + i, _data[i]);
+        	}
+			_allocator.construct(newdata+_capacity, val);
+			_size++;
+			for(int i = 0; i < _capacity; i++) {
+				_allocator.destroy(_data + i);
+			}
+			_allocator.deallocate(_data, _capacity);
+			_data = newdata;
+			_capacity *= 2;
+    	}
+		else
+		{
+			T *newdata = _allocator.allocate(1);
+			_allocator.construct(newdata, val);
+			_data = newdata;
+			_capacity = 1;
+			_size++;
+		}
+    }
+
 //     void pop_back(); // remove the last element, decrease size by 1
 //     iterator insert (iterator position, const value_type& val); // insert new element before position
 //     void insert (iterator position, size_type n, const value_type& val); // insert n elements before position

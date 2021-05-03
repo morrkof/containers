@@ -5,7 +5,7 @@
 
 int main()
 {
-    std::cout << "TESTING CONSTRUCTORS:" << std::endl;
+    std::cout << std::endl << "1. TESTING CONSTRUCTORS && DESTRUCTOR:" << std::endl;
     std::vector<std::string> v_empty;
     std::cout << "std | Default constructor: size - " << v_empty.size() << ", capacity - " << v_empty.capacity() << std::endl;
     std::vector<int> v_zero(5);
@@ -29,6 +29,7 @@ int main()
     ft::vector<int> ft_full(3, 42);
     std::cout << "ft | Fill constructor with value = 42: size - " << ft_full.size() << ", capacity - " << ft_full.capacity() 
     << ", elements: " << ft_full[0] << " " << ft_full[1] << " " << ft_full[2] << std::endl;
+    
     // ft::vector<int> ft_range(ft_full.begin(), ft_full.end());
     // std::cout << "ft | Range constructor (fill): size - " << ft_range.size() << ", capacity - " << ft_range.capacity() 
     // << ", elements: " << ft_range[0] << " " << ft_range[1] << " " << ft_range[2] << std::endl;
@@ -38,19 +39,98 @@ int main()
 
 
 
+    std::cout << std::endl << "2. TESTING ITERATORS:" << std::endl;
+// begin, end, rbegin, rend
 
 
-    // std::cout << "++" << std::endl;
-    // for(int i = 0; i != 18; i++)
-    // {
-    //     v.push_back(42);
-    //     std::cout << "SIZE: " << v.size() << " CAPACITY: " << v.capacity() << std::endl;
-    // }
+    std::cout << std::endl << "3. TESTING CAPACITY:" << std::endl;
+// size, max_size, resize, capacity, empty, reserve
+
+    std::vector<int> v;
+    std::cout << "std | ++" << std::endl;
+    for(int i = 0; i != 18; i++)
+    {
+        std::cout << "std | SIZE: " << v.size() << " CAPACITY: " << v.capacity() << std::endl;
+        v.push_back(42);
+    }
+
+    ft::vector<int> ft_v;
+    std::cout << "ft | ++" << std::endl;
+    for(int i = 0; i != 18; i++)
+    {
+        std::cout << "ft | SIZE: " << ft_v.size() << " CAPACITY: " << ft_v.capacity() << std::endl;
+        ft_v.push_back(42);
+    }
+
     // std::cout << "--" << std::endl;
     // for(int i = 0; i != 5; i++)
     // {
     //     v.pop_back();
     //     std::cout << "SIZE: " << v.size() << " CAPACITY: " << v.capacity() << std::endl;
     // }
+
+
+
+    std::cout << std::endl << "4. TESTING ELEMENT ACCESS:" << std::endl;
+// operator[], at, front, back
+    std::cout << "AT AND THROWING EXCEPTION:" << std::endl;
+    std::vector<int> v_at;
+    for(int i = 42; i < 45; i++)
+        v_at.push_back(i);
+    ft::vector<int> ft_at;
+    for(int i = 42; i < 45; i++)
+        ft_at.push_back(i);
+ 
+    std::cout << "std | AT [0] " << v_at.at(0) << std::endl;
+    try 
+    {
+        std::cout << "std | AT [42] " << v_at.at(42) << std::endl;
+    }
+    catch(std::out_of_range &e)
+    {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+
+    std::cout << "ft | AT [0] " << ft_at.at(0) << std::endl;
+    try 
+    {
+        std::cout << "ft | AT [42] " << ft_at.at(42) << std::endl;
+    }
+    catch(std::out_of_range &e)
+    {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+
+
+
+
+
+    std::cout << std::endl << "5. TESTING MODIFIERS:" << std::endl;
+// assign, push_back, pop_back, insert, erase, swap, clear
+    std::cout << "PUSH_BACK:" << std::endl;
+    std::vector<int> v_push;
+    int j = 0;
+    for(int i = 42; i < 45; i++)
+    {
+        v_push.push_back(i);
+        std::cout << "std | Push_back: added element - " << v_push[j] << ", size - " << v_push.size() << ", capacity - " << v_push.capacity() << std::endl;
+        j++;
+    }
+   
+    ft::vector<int> ft_push;
+    j = 0;
+    for(int i = 42; i < 45; i++)
+    {
+        ft_push.push_back(i);
+        std::cout << "ft | Push_back: added element - " << ft_push[j] << ", size - " << ft_push.size() << ", capacity - " << ft_push.capacity() << std::endl;
+        j++;
+    }
+
+    std::cout << std::endl << "6. TESTING NON-MEMBER OVERLOADS:" << std::endl;
+// swap, ==, !=, <, <=, >, >=,
+
+
+
+ 
 
 }
