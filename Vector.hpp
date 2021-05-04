@@ -30,7 +30,7 @@ public:
 
 public:
 
-    /* CONSTRUCTORS && DESTRUCTOR*/
+    /* 1. CONSTRUCTORS && DESTRUCTOR*/
 
     explicit vector (const allocator_type& alloc = allocator_type()) {
       _allocator = alloc;
@@ -72,7 +72,7 @@ public:
 
 
 
-//      /* ITERATORS */
+//      /* 2. ITERATORS */
 
     iterator begin() { return &(_data[0]); } // return random access iterator pointing to first element
     const_iterator begin() const { return &(_data[0]); } 
@@ -88,7 +88,7 @@ public:
 
 
 
-/* CAPACITY */
+/* 3. CAPACITY */
 
     size_type size() const { return _size; }
     size_type max_size() const{ return (std::numeric_limits<size_type>::max() / sizeof(value_type)); }
@@ -103,7 +103,7 @@ public:
 
 
 
-/************* ELEMENT ACCESS *************/
+/************* 4. ELEMENT ACCESS *************/
 
     reference operator[] (size_type n) { return _data[n]; }
     const_reference operator[] (size_type n) const { return _data[n]; }
@@ -124,7 +124,7 @@ public:
 
 
 
-//     /* MODIFIERS */
+//     /* 5. MODIFIERS */
 
 //     template <class InputIterator>
 //     void assign (InputIterator first, InputIterator last);	// replace content on range (destroy all old elements)
@@ -179,7 +179,7 @@ public:
 
 
 
-// /* NON-MEMBER OVERLOADS */
+// /* 6. NON-MEMBER OVERLOADS */
 
 // template <class T, class Alloc>
 //   bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs); // comparing sizes, if match - comparing elements
