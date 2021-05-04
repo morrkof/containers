@@ -1,4 +1,9 @@
+#ifndef FT_VECTOR
+#define FT_VECTOR
+
 #include <memory>
+#include <limits>
+
 namespace ft {
 
 template <class T, class Alloc = std::allocator<T> >
@@ -6,22 +11,22 @@ class vector
 {
 private:
 	T * _data;
-  Alloc _allocator;
+	Alloc _allocator;
 	int _capacity;
 	int _size;
 public:
-    typedef T value_type;
-    typedef Alloc allocator_type;
-    typedef value_type& reference;
-    typedef const value_type& const_reference;
-	typedef  value_type* pointer;
-    typedef const value_type* const_pointer;
-//     typedef iterator ; // struct random_access_iterator_tag to value_type  тип итератора для контейнера данного типа
-//     typedef const_iterator ; // struct random_access_iterator_tag to const value_type
-//     typedef reverse_iterator reverse_iterator<iterator>; // template <class Iterator> class reverse_iterator;
-//     typedef const_reverse_iterator reverse_iterator<const_iterator>;
-    typedef ptrdiff_t difference_type; // iterator_traits<iterator>::difference_type  значение разницы между двумя итераторами
-    typedef size_t size_type; // значение размера наибольшего возможного контейнера данного типа
+    typedef T					value_type;
+    typedef Alloc				allocator_type;
+    typedef value_type&			reference;
+    typedef const value_type&	const_reference;
+	typedef  value_type*		pointer;
+    typedef const value_type*	const_pointer;
+    typedef pointer             iterator;
+    typedef const pointer       const_iterator;
+    // typedef reverse_rendom_access_it reverse_iterator;
+    // typedef const_reverse_random_access_it const_reverse_iterator;
+    typedef ptrdiff_t			difference_type; // iterator_traits<iterator>::difference_type  значение разницы между двумя итераторами
+    typedef size_t				size_type; // значение размера наибольшего возможного контейнера данного типа
 
 public:
 
@@ -62,22 +67,31 @@ public:
 
 //     vector& operator= (const vector& x);
 
+
+
+
+
+
 //      /* ITERATORS */
 
-//     iterator begin(); // return random access iterator pointing to first element
-//     const_iterator begin() const;
-//     iterator end(); // return iterator reffering next after last element. iterator is alias
-//     const_iterator end() const;
-//     reverse_iterator rbegin(); // last element
-//     const_reverse_iterator rbegin() const;
-//     reverse_iterator rend(); // theoretical element before first
-//     const_reverse_iterator rend() const;
+    iterator begin() { return &(_data[0]); } // return random access iterator pointing to first element
+    const_iterator begin() const { return &(_data[0]); } 
+    iterator end()  { return &(_data[_size]); }  // return iterator reffering next after last element. iterator is alias
+    const_iterator end() const { return &(_data[_size]); }
+    // reverse_iterator rbegin(); // last element
+    // const_reverse_iterator rbegin() const;
+    // reverse_iterator rend(); // theoretical element before first
+    // const_reverse_iterator rend() const;
 
 
-//      /* CAPACITY */
+
+
+
+
+/* CAPACITY */
 
     size_type size() const { return _size; }
-//     size_type max_size() const; // return maximum number of elements (potential), in reference is 1073741823
+    size_type max_size() const{ return (std::numeric_limits<size_type>::max() / sizeof(value_type)); }
 //     void resize (size_type n, value_type val = value_type()); // change size, if n < container reduces and destroy other elements, 
 // 	// if n > container expanded, if n > capacity reallocate storage
     size_type capacity() const { return _capacity; }
@@ -85,22 +99,29 @@ public:
 //     void reserve (size_type n); // request change of capacity, if n < current capacity, do nothing
 
 
-//     /* ELEMENT ACCESS */
 
-    reference operator[] (size_type n) { return _data[n]; } // return reference to element at position n
-    // const_reference operator[] (size_type n) const { return const _data[n]; }
-    reference at (size_type n) // same as [], but can throw exception if out of range
+
+
+
+/************* ELEMENT ACCESS *************/
+
+    reference operator[] (size_type n) { return _data[n]; }
+    const_reference operator[] (size_type n) const { return _data[n]; }
+    reference at (size_type n)
 	{
 		if(n < 0 || n > _size)
-			throw std::out_of_range("blabla");
+			throw std::out_of_range("!!! OUT OF RANGE !!!");
 		else
 			return _data[n];
 	}
-//     const_reference at (size_type n) const;
-//     reference front(); // return reference to first element, UB if empty vector. reference is alias
-//     const_reference front() const; 
-//     reference back(); // return reference to last element, UB if empty vector. reference is alias
-//     const_reference back() const;
+    const_reference at (size_type n) const { return this->at(n); }
+    reference front() { return _data[0]; }
+    const_reference front() const { return _data[0]; }
+    reference back() { return _data[_size - 1]; }
+    const_reference back() const { return _data[_size - 1]; }
+
+
+
 
 
 //     /* MODIFIERS */
@@ -154,6 +175,10 @@ public:
 
 // };
 
+
+
+
+
 // /* NON-MEMBER OVERLOADS */
 
 // template <class T, class Alloc>
@@ -180,3 +205,5 @@ public:
 
 }; // class bracket
 } // namespace bracket
+
+#endif

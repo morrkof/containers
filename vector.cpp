@@ -41,10 +41,32 @@ int main()
 
     std::cout << std::endl << "2. TESTING ITERATORS:" << std::endl;
 // begin, end, rbegin, rend
+    std::vector<int> v_iter;
+    for(int i = 12; i < 20; i++)
+    {
+        v_iter.push_back(i);
+    }
+    for(std::vector<int>::iterator it = v_iter.begin(); it != v_iter.end(); it++)
+    {
+        std::cout << *it << "  ";
+    }
+    std::cout << std::endl;
+
+
+    ft::vector<int> ft_iter;
+    for(int i = 12; i < 20; i++)
+    {
+        ft_iter.push_back(i);
+    }
+    for(ft::vector<int>::iterator it = ft_iter.begin(); it != ft_iter.end(); it++)
+    {
+        std::cout << *it << "  ";
+    }
+    std::cout << std::endl;
 
 
     std::cout << std::endl << "3. TESTING CAPACITY:" << std::endl;
-// size, max_size, resize, capacity, empty, reserve
+// +size, +max_size, resize, +capacity, +empty, reserve
 
     std::vector<int> v;
     std::cout << "std | ++" << std::endl;
@@ -69,18 +91,30 @@ int main()
     //     std::cout << "SIZE: " << v.size() << " CAPACITY: " << v.capacity() << std::endl;
     // }
 
+    std::cout << "std | MAX SIZE is " << v.max_size() << std::endl;
+    std::cout << "ft | MAX SIZE is " << ft_v.max_size() << std::endl;
+    std::vector<int> v_emp;
+    ft::vector<int> ft_emp;
+    std::cout << "std | EMPTY????? (no) " << v.empty() << std::endl;
+    std::cout << "std | EMPTY????? (yes) " << v_emp.empty() << std::endl;
+    std::cout << "ft | EMPTY????? (no) " << ft_v.empty() << std::endl;
+    std::cout << "ft | EMPTY????? (yes) " << ft_emp.empty() << std::endl;
+
+    
+
 
 
     std::cout << std::endl << "4. TESTING ELEMENT ACCESS:" << std::endl;
-// operator[], at, front, back
-    std::cout << "AT AND THROWING EXCEPTION:" << std::endl;
     std::vector<int> v_at;
     for(int i = 42; i < 45; i++)
         v_at.push_back(i);
     ft::vector<int> ft_at;
     for(int i = 42; i < 45; i++)
         ft_at.push_back(i);
- 
+    std::cout << "ACCESS VIA SQUARE BRACKETS:" << std::endl;
+    std::cout << "std | elements: " << v_at[0] << " " << v_at[1] << " " << v_at[2] << std::endl;
+    std::cout << "ft | elements: " << ft_at[0] << " " << ft_at[1] << " " << ft_at[2] << std::endl;
+    std::cout << "AT AND THROWING EXCEPTION:" << std::endl;
     std::cout << "std | AT [0] " << v_at.at(0) << std::endl;
     try 
     {
@@ -90,7 +124,6 @@ int main()
     {
         std::cerr << "Error: " << e.what() << std::endl;
     }
-
     std::cout << "ft | AT [0] " << ft_at.at(0) << std::endl;
     try 
     {
@@ -100,7 +133,8 @@ int main()
     {
         std::cerr << "Error: " << e.what() << std::endl;
     }
-
+    std::cout << "std | FRONT element: " << v_at.front() << ", BACK element: " << v_at.back() << std::endl;
+    std::cout << "ft | FRONT element: " << ft_at.front() << ", BACK element: " << ft_at.back() << std::endl;
 
 
 
