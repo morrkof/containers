@@ -7,30 +7,30 @@
 namespace ft {
 
 template <class T, class Alloc = std::allocator<T> >
-class vector
-{
+class vector {
 private:
 	T * _data;
 	Alloc _allocator;
 	int _capacity;
 	int _size;
 public:
+    class Iterator;
+    class RIterator;
+
     typedef T					value_type;
     typedef Alloc				allocator_type;
     typedef value_type&			reference;
     typedef const value_type&	const_reference;
 	typedef  value_type*		pointer;
     typedef const value_type*	const_pointer;
-    typedef pointer             iterator;
-    typedef const pointer       const_iterator;
-    // typedef reverse_rendom_access_it reverse_iterator;
-    // typedef const_reverse_random_access_it const_reverse_iterator;
-    typedef ptrdiff_t			difference_type; // iterator_traits<iterator>::difference_type  значение разницы между двумя итераторами
-    typedef size_t				size_type; // значение размера наибольшего возможного контейнера данного типа
+    typedef Iterator            iterator;
+    typedef Iterator            const_iterator;
+    typedef RIterator           reverse_iterator;
+    typedef RIterator           const_reverse_iterator;
+    typedef ptrdiff_t			difference_type;
+    typedef size_t				size_type;
 
-public:
-
-    /* 1. CONSTRUCTORS && DESTRUCTOR*/
+/************* 1. CONSTRUCTORS && DESTRUCTOR *************/
 
     explicit vector (const allocator_type& alloc = allocator_type()) {
       _allocator = alloc;
@@ -48,12 +48,6 @@ public:
           _allocator.construct(tmp, val);
           tmp++;
       }
-    //   pointer end = _data + n;
-    //   for(pointer i = _data; i != end; i++)
-    //   {
-    //     _allocator.construct(i, val);
-    //   }
-      
       _size = n;
       _capacity = n;
     }
@@ -69,26 +63,20 @@ public:
 
 
 
+/************* 2. ITERATORS *************/
+
+    iterator begin() { return _data; }
+    const_iterator begin() const { return _data; } 
+    iterator end()  { return (_data + _size); }
+    const_iterator end() const { return (_data + _size); }
+    reverse_iterator rbegin() { return (_data + _size - 1); }
+    const_reverse_iterator rbegin() const { return (_data + _size - 1); }
+    reverse_iterator rend() { return (_data - 1); }
+    const_reverse_iterator rend() const { return (_data - 1); }
 
 
 
-//      /* 2. ITERATORS */
-
-    iterator begin() { return &(_data[0]); } // return random access iterator pointing to first element
-    const_iterator begin() const { return &(_data[0]); } 
-    iterator end()  { return &(_data[_size]); }  // return iterator reffering next after last element. iterator is alias
-    const_iterator end() const { return &(_data[_size]); }
-    // reverse_iterator rbegin(); // last element
-    // const_reverse_iterator rbegin() const;
-    // reverse_iterator rend(); // theoretical element before first
-    // const_reverse_iterator rend() const;
-
-
-
-
-
-
-/* 3. CAPACITY */
+/************* 3. CAPACITY *************/
 
     size_type size() const { return _size; }
     size_type max_size() const{ return (std::numeric_limits<size_type>::max() / sizeof(value_type)); }
@@ -124,7 +112,7 @@ public:
 
 
 
-//     /* 5. MODIFIERS */
+/************* 5. MODIFIERS *************/
 
 //     template <class InputIterator>
 //     void assign (InputIterator first, InputIterator last);	// replace content on range (destroy all old elements)
@@ -178,8 +166,7 @@ public:
 
 
 
-
-// /* 6. NON-MEMBER OVERLOADS */
+/************* 6. NON-MEMBER OVERLOADS *************/
 
 // template <class T, class Alloc>
 //   bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs); // comparing sizes, if match - comparing elements
@@ -201,6 +188,62 @@ public:
 
 // template <class T, class Alloc>
 //   void swap (vector<T,Alloc>& x, vector<T,Alloc>& y); // containers exchange references to their data, without copy or move elements
+
+
+class Iterator {
+private:
+    T * _current;
+public:
+    Iterator() { _current = NULL; }
+    Iterator(Iterator const &src) { *this = src; }
+    Iterator &operator=(Iterator const &src) { this->_current = src._current; return *this; }
+    Iterator(T * const ptr) { _current = ptr; }
+    ~Iterator() {}
+
+    reference operator*() { return *_current; }
+    Iterator &operator++() { _current++; return *this; } // prefix
+    Iterator &operator--() { _current--; return *this; } // prefix
+    Iterator operator++(int) { Iterator tmp = *this; _current++; return tmp; } // postfix
+    Iterator operator--(int) { Iterator tmp = *this; _current--; return tmp; } // postfix
+    bool operator==(Iterator const &src) { return (this->_current == src._current); }
+    bool operator!=(Iterator const &src) { return (this->_current != src._current); }
+    bool operator<=(Iterator const &src) { return (this->_current <= src._current); }
+    bool operator<(Iterator const &src) { return (this->_current < src._current); }
+    bool operator>=(Iterator const &src) { return (this->_current >= src._current); }
+    bool operator>(Iterator const &src) { return (this->_current > src._current); }
+
+    Iterator &operator+(size_type n) { return (_current + n); }
+    Iterator &operator+=(size_type n) { return (_current + n); }
+    Iterator &operator-(size_type n) { return (_current - n); }
+    Iterator &operator-=(size_type n) { return (_current - n); }
+};
+
+class RIterator {
+public:
+    T * _current;
+    RIterator() { _current = NULL; }
+    RIterator(RIterator const &src) { *this = src; }
+    RIterator &operator=(RIterator const &src) { this->_current = src._current; return *this; }
+    RIterator(T * const ptr) { _current = ptr; }
+    ~RIterator() {}
+
+    reference operator*() { return *_current; }
+    RIterator &operator++() { _current--; return *this; } // prefix
+    RIterator &operator--() { _current++; return *this; } // prefix
+    RIterator operator++(int) { RIterator tmp = *this; _current--; return tmp; } // postfix
+    RIterator operator--(int) { RIterator tmp = *this; _current++; return tmp; } // postfix
+    bool operator==(RIterator const &src) { return (this->_current == src._current); }
+    bool operator!=(RIterator const &src) { return (this->_current != src._current); }
+    bool operator<=(RIterator const &src) { return (this->_current <= src._current); }
+    bool operator<(RIterator const &src) { return (this->_current < src._current); }
+    bool operator>=(RIterator const &src) { return (this->_current >= src._current); }
+    bool operator>(RIterator const &src) { return (this->_current > src._current); }
+
+    RIterator &operator+(size_type n) { return (_current - n); }
+    RIterator &operator+=(size_type n) { return (_current - n); }
+    RIterator &operator-(size_type n) { return (_current + n); }
+    RIterator &operator-=(size_type n) { return (_current + n); }
+};
 
 
 }; // class bracket
