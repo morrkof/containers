@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <limits>
+#include <cstddef> // linux
 
 namespace ft {
 
@@ -19,18 +20,18 @@ public:
     class RIterator;
     class CRIterator;
 
-    typedef T					value_type;
-    typedef Alloc				allocator_type;
-    typedef value_type&			reference;
-    typedef const value_type&	const_reference;
-	typedef  value_type*		pointer;
-    typedef const value_type*	const_pointer;
-    typedef Iterator            iterator;
-    typedef CIterator           const_iterator;
-    typedef RIterator           reverse_iterator;
-    typedef CRIterator          const_reverse_iterator;
-    typedef ptrdiff_t			difference_type;
-    typedef size_t				size_type;
+    typedef T			value_type;
+    typedef Alloc		allocator_type;
+    typedef T&			reference;
+    typedef const T&	const_reference;
+	typedef	T*			pointer;
+    typedef const T*	const_pointer;
+    typedef Iterator	iterator;
+    typedef CIterator	const_iterator;
+    typedef RIterator	reverse_iterator;
+    typedef CRIterator	const_reverse_iterator;
+    typedef ptrdiff_t	difference_type;
+    typedef size_t		size_type;
 
 /************* 1. CONSTRUCTORS && DESTRUCTOR *************/
 
@@ -54,6 +55,7 @@ public:
       _capacity = n;
     }
 
+// размер last - first и копирует все значения из диапазона
 //     template <class InputIterator>
 //     vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()); // range constructor, including first excluding last
 
@@ -61,20 +63,21 @@ public:
 
 //     ~vector();  // destroy elements and deallocate capacity
 
+//  замещает содержимое текущего вектора копией вектора х
 //     vector& operator= (const vector& x);
 
 
 
 /************* 2. ITERATORS *************/
 
-    iterator begin() { return _data; }
-    const_iterator begin() const { return _data; } 
-    iterator end()  { return (_data + _size); }
-    const_iterator end() const { return (_data + _size); }
-    reverse_iterator rbegin() { return (_data + _size - 1); }
-    const_reverse_iterator rbegin() const { return (_data + _size - 1); }
-    reverse_iterator rend() { return (_data - 1); }
-    const_reverse_iterator rend() const { return (_data - 1); }
+    iterator begin() { return Iterator(_data); }
+    const_iterator begin() const { return CIterator(_data); } 
+    iterator end()  { return Iterator(_data + _size); }
+    const_iterator end() const { return CIterator(_data + _size); }
+    reverse_iterator rbegin() { return RIterator(_data + _size - 1); }
+    const_reverse_iterator rbegin() const { return CRIterator(_data + _size - 1); }
+    reverse_iterator rend() { return RIterator(_data - 1); }
+    const_reverse_iterator rend() const { return CRIterator(_data - 1); }
 
 
 
@@ -82,10 +85,15 @@ public:
 
     size_type size() const { return _size; }
     size_type max_size() const{ return (std::numeric_limits<size_type>::max() / sizeof(value_type)); }
+
+// изменяет размер либо вставляя лишние, либо удаляя с конца
 //     void resize (size_type n, value_type val = value_type()); // change size, if n < container reduces and destroy other elements, 
 // 	// if n > container expanded, if n > capacity reallocate storage
+
     size_type capacity() const { return _capacity; }
     bool empty() const { return (_size == 0 ? 1 : 0); }
+
+	// перераспределение памяти только если текущая ёмкость меньше переданного аргумента
 //     void reserve (size_type n); // request change of capacity, if n < current capacity, do nothing
 
 
@@ -116,8 +124,11 @@ public:
 
 /************* 5. MODIFIERS *************/
 
+//  эквивалентно clear + insert(begin, first, last)
 //     template <class InputIterator>
 //     void assign (InputIterator first, InputIterator last);	// replace content on range (destroy all old elements)
+
+//  эквивалентно clear + insert(begin, n, u)
 //     void assign (size_type n, const value_type& val); // replace content of n elements, each value is val
 
 	void push_back (const value_type& val) // add new element at the end, increase container size by 1
@@ -153,14 +164,28 @@ public:
 		}
     }
 
+// удаляет последний элемент, УБ если вектор пустой
 //     void pop_back(); // remove the last element, decrease size by 1
+
+//  вставляет элемент на позицию, остальное сдвигается. возвращает итератор на новый элемент
 //     iterator insert (iterator position, const value_type& val); // insert new element before position
+
+//  вставляет n элементов начиная с позиции
 //     void insert (iterator position, size_type n, const value_type& val); // insert n elements before position
+
+//  вставляет диапазон элементов начиная с позиции
 //     template <class InputIterator>
 //     void insert (iterator position, InputIterator first, InputIterator last); // insert range elements before position
+
+//  удаляет элемент на позиции, возвращает итератор на следующий после удалённым элемент, либо end если удалили последний
 //     iterator erase (iterator position); // remove element on position
+
+// удаляет диапазон элементов, возвращает то же
 //     iterator erase (iterator first, iterator last); // remove range of elements
+
 //     void swap (vector& x); // swap content
+
+// удалаяет вообще всё
 //     void clear(); // removes all elements, leaving container size = 0
 
 // };

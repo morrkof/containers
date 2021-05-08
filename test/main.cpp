@@ -2,7 +2,7 @@
 #include <string>
 #include <iostream>
 #include <iomanip>
-#include "Vector.hpp"
+#include "../Vector.hpp"
 
 class Awesome {
 public:
@@ -23,11 +23,12 @@ std::ostream &operator<<(std::ostream &os, Awesome const &i){
 	return os;
 }
 
-void print_beautiful_cock(std::string str)
+void print_beautiful_title(std::string str)
 {
+	std::cout << "\e[1;33m";
     std::cout << std::endl;
     for (int i = 0; i < 20; i++)
-        std::cout << "🐓";
+        std::cout << "✨";
     int a = (40 - str.size()) / 2;
     for (int i = 0; i < a; i++)
         std::cout << " ";
@@ -37,13 +38,15 @@ void print_beautiful_cock(std::string str)
     if (str.size() % 2)
         std::cout << " ";
     for (int i = 0; i < 20; i++)
-        std::cout << "🐓";
+        std::cout << "✨";
     std::cout << std::endl;
+	std::cout << "\e[0m";
 }
 
-int main()
+
+void test_vector()
 {
-    print_beautiful_cock("1. TESTING CONSTRUCTORS && DESTRUCTOR:");
+    print_beautiful_title("1. TESTING CONSTRUCTORS && DESTRUCTOR:");
     // std::cout << std::endl << "************* 1. TESTING CONSTRUCTORS && DESTRUCTOR: *************" << std::endl;
     std::vector<std::string> v_empty;
     std::cout << "std | Default constructor: size - " << v_empty.size() << ", capacity - " << v_empty.capacity() << std::endl;
@@ -79,7 +82,7 @@ int main()
 
 
 
-    print_beautiful_cock("2. TESTING ITERATORS:");
+    print_beautiful_title("2. TESTING ITERATORS:");
     // std::cout << std::endl << "************* 2. TESTING ITERATORS: *************" << std::endl;
 // begin, end, rbegin, rend
     std::vector<int> v_iter;
@@ -110,8 +113,8 @@ int main()
 
 
 
-
-    print_beautiful_cock("3. TESTING CAPACITY:");
+	
+    print_beautiful_title("3. TESTING CAPACITY:");
     // std::cout << std::endl << "************* 3. TESTING CAPACITY: *************" << std::endl;
 // +size, +max_size, resize, +capacity, +empty, reserve
     std::cout << "SIZE && CAPACITY:" << std::endl;
@@ -151,7 +154,7 @@ int main()
     
 
 
-    print_beautiful_cock("4. TESTING ELEMENT ACCESS:");
+    print_beautiful_title("4. TESTING ELEMENT ACCESS:");
     // std::cout << std::endl << "************* 4. TESTING ELEMENT ACCESS: *************" << std::endl;
     std::vector<int> v_at;
     for(int i = 42; i < 45; i++)
@@ -188,7 +191,7 @@ int main()
 
 
 
-    print_beautiful_cock("5. TESTING MODIFIERS:");
+    print_beautiful_title("5. TESTING MODIFIERS:");
     // std::cout << std::endl << "************* 5. TESTING MODIFIERS: *************" << std::endl;
 // assign, push_back, pop_back, insert, erase, swap, clear
     std::cout << "PUSH_BACK:" << std::endl;
@@ -213,12 +216,14 @@ int main()
 
 
 
-    print_beautiful_cock("6. TESTING NON-MEMBER OVERLOADS:");
+    print_beautiful_title("6. TESTING NON-MEMBER OVERLOADS:");
     // std::cout << std::endl << "************* 6. TESTING NON-MEMBER OVERLOADS: *************" << std::endl;
 // swap, ==, !=, <, <=, >, >=,
 
 
+}
 
- 
-
+int main()
+{
+	test_vector();
 }
