@@ -1,5 +1,5 @@
 NAME = containers
-SRC = ./test/main.cpp
+SRC = ./test/test.cpp ./test/vector.cpp
 OBJ = $(SRC:.cpp=.o)
 CFLAGS = -Wall -Wextra -Werror -std=c++98
 

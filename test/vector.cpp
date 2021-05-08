@@ -1,53 +1,8 @@
-#include <vector>
-#include <string>
-#include <iostream>
-#include <iomanip>
-#include "../Vector.hpp"
-
-class Awesome {
-public:
-	Awesome(int n): _n(n) {}
-	int getN(void) const { return this->_n; }
-	bool operator==(Awesome const &rhs) const { return (this->_n == rhs._n); }
-	bool operator!=(Awesome const &rhs) const { return (this->_n != rhs._n); }
-	bool operator>(Awesome const &rhs) const { return (this->_n > rhs._n); }
-	bool operator<(Awesome const &rhs) const { return (this->_n < rhs._n); }
-	bool operator>=(Awesome const &rhs) const { return (this->_n >= rhs._n); }
-	bool operator<=(Awesome const &rhs) const { return (this->_n <= rhs._n); }
-private:
-	int _n;
-};
-
-std::ostream &operator<<(std::ostream &os, Awesome const &i){
-	os << i.getN();
-	return os;
-}
-
-void print_beautiful_title(std::string str)
-{
-	std::cout << "\e[1;33m";
-    std::cout << std::endl;
-    for (int i = 0; i < 20; i++)
-        std::cout << "✨";
-    int a = (40 - str.size()) / 2;
-    for (int i = 0; i < a; i++)
-        std::cout << " ";
-    std::cout << str;
-    for (int i = 0; i < a; i++)
-        std::cout << " ";
-    if (str.size() % 2)
-        std::cout << " ";
-    for (int i = 0; i < 20; i++)
-        std::cout << "✨";
-    std::cout << std::endl;
-	std::cout << "\e[0m";
-}
-
+#include "test.hpp"
 
 void test_vector()
 {
     print_beautiful_title("1. TESTING CONSTRUCTORS && DESTRUCTOR:");
-    // std::cout << std::endl << "************* 1. TESTING CONSTRUCTORS && DESTRUCTOR: *************" << std::endl;
     std::vector<std::string> v_empty;
     std::cout << "std | Default constructor: size - " << v_empty.size() << ", capacity - " << v_empty.capacity() << std::endl;
     std::vector<int> v_zero(5);
@@ -79,11 +34,7 @@ void test_vector()
     // std::cout << "ft | Copy constructor (fill): size - " << ft_copy.size() << ", capacity - " << ft_copy.capacity() 
     // << ", elements: " << ft_copy[0] << " " << ft_copy[1] << " " << ft_copy[2] << std::endl;
 
-
-
-
     print_beautiful_title("2. TESTING ITERATORS:");
-    // std::cout << std::endl << "************* 2. TESTING ITERATORS: *************" << std::endl;
 // begin, end, rbegin, rend
     std::vector<int> v_iter;
     for(int i = 12; i < 20; i++)
@@ -110,12 +61,8 @@ void test_vector()
         std::cout << *it << "  ";
     }
     std::cout << std::endl;
-
-
-
 	
     print_beautiful_title("3. TESTING CAPACITY:");
-    // std::cout << std::endl << "************* 3. TESTING CAPACITY: *************" << std::endl;
 // +size, +max_size, resize, +capacity, +empty, reserve
     std::cout << "SIZE && CAPACITY:" << std::endl;
     std::vector<int> v;
@@ -151,11 +98,7 @@ void test_vector()
     std::cout << "ft  | IS EMPTY? (no) " << ft_v.empty() << std::endl;
     std::cout << "ft  | IS EMPTY? (yes) " << ft_emp.empty() << std::endl;
 
-    
-
-
     print_beautiful_title("4. TESTING ELEMENT ACCESS:");
-    // std::cout << std::endl << "************* 4. TESTING ELEMENT ACCESS: *************" << std::endl;
     std::vector<int> v_at;
     for(int i = 42; i < 45; i++)
         v_at.push_back(i);
@@ -187,12 +130,7 @@ void test_vector()
     std::cout << "std | FRONT element: " << v_at.front() << ", BACK element: " << v_at.back() << std::endl;
     std::cout << "ft  | FRONT element: " << ft_at.front() << ", BACK element: " << ft_at.back() << std::endl;
 
-
-
-
-
     print_beautiful_title("5. TESTING MODIFIERS:");
-    // std::cout << std::endl << "************* 5. TESTING MODIFIERS: *************" << std::endl;
 // assign, push_back, pop_back, insert, erase, swap, clear
     std::cout << "PUSH_BACK:" << std::endl;
     std::vector<int> v_push;
@@ -213,17 +151,7 @@ void test_vector()
         j++;
     }
 
-
-
-
     print_beautiful_title("6. TESTING NON-MEMBER OVERLOADS:");
-    // std::cout << std::endl << "************* 6. TESTING NON-MEMBER OVERLOADS: *************" << std::endl;
 // swap, ==, !=, <, <=, >, >=,
 
-
-}
-
-int main()
-{
-	test_vector();
 }
