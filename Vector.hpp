@@ -14,6 +14,14 @@ private:
 	Alloc _allocator;
 	size_t _capacity;
 	size_t _size;
+
+	void	swap(T &a, T &b)
+	{
+		T c = a;
+		a = b;
+		b = c;
+	}
+
 public:
     class Iterator;
     class CIterator;
@@ -55,16 +63,41 @@ public:
       _capacity = n;
     }
 
-// размер last - first и копирует все значения из диапазона
-//     template <class InputIterator>
-//     vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()); // range constructor, including first excluding last
+// TODO!! (SFINAE)
+// размер last - first и копирует все значения из диапазона 
+    // template <class InputIterator>
+    // vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()) // range constructor, including first excluding last
+	// {
+	// 	_allocator = alloc;
+	// 	size_type n;
+	// 	for(iterator tmp = first; tmp != last; tmp++)
+	// 		n++;
+	// 	_data = _allocator.allocate(n);
+	// 	pointer tmp_data = _data;
+	// 	for(size_type i = 0; i < n; i++)
+	// 	{
+	// 		_allocator.construct(tmp_data, *first);
+	// 		tmp_data++;
+	// 		first++;
+	// 	}
+	// 	_size = n;
+	// 	_capacity = n;
+	// }
 
-//     vector (const vector& x) { *this = x; } // copy constructor
+    vector (const vector& x) { *this = x; }
 
-//     ~vector();  // destroy elements and deallocate capacity
+    ~vector()
+	{
+		this->clear();
+		_allocator.deallocate(_data, _capacity);
+	}
 
 //  замещает содержимое текущего вектора копией вектора х
-//     vector& operator= (const vector& x);
+    // vector& operator= (const vector& x)
+	// {
+	// 	// аллокатор нужен новый, перенести в него элементы
+	// }
+
 
 
 
@@ -84,21 +117,49 @@ public:
 /************* 3. CAPACITY *************/
 
     size_type size() const { return _size; }
-    size_type max_size() const{ return (std::numeric_limits<size_type>::max() / sizeof(value_type)); }
-
-// изменяет размер либо вставляя лишние, либо удаляя с конца
-//     void resize (size_type n, value_type val = value_type()); // change size, if n < container reduces and destroy other elements, 
-// 	// if n > container expanded, if n > capacity reallocate storage
+	size_type max_size() const{ return (std::numeric_limits<size_type>::max() / sizeof(value_type)); }
+    
+	void resize (size_type n, value_type val = value_type())
+	{
+		if (n < _size)
+		{
+			for(size_type i = _size; i != n; i--)
+				this->pop_back();
+		}
+		else if (n > _size)
+		{
+			if (n <= _capacity)
+				for(size_type i = _size; i != n; i++)
+					this->push_back(val);
+			else
+			{
+				this->reserve(n);
+				for(size_type i = _size; i != n; i++)
+				{
+					_allocator.construct(_data + i, val);
+					_size++;
+				}
+			}
+		}
+	}
 
     size_type capacity() const { return _capacity; }
     bool empty() const { return (_size == 0 ? 1 : 0); }
 
-	// перераспределение памяти только если текущая ёмкость меньше переданного аргумента
-//     void reserve (size_type n); // request change of capacity, if n < current capacity, do nothing
-
-
-
-
+    void reserve (size_type n)
+	{
+		if (n > _capacity)
+		{
+			T *newdata = _allocator.allocate(n);
+			for(size_type i = 0; i < _size; i++) 
+				_allocator.construct(newdata + i, _data[i]);
+			for(size_type i = 0; i < _capacity; i++)
+					_allocator.destroy(_data + i);
+			_allocator.deallocate(_data, _capacity);
+			_data = newdata;
+			_capacity = n;
+		}
+	}
 
 
 /************* 4. ELEMENT ACCESS *************/
@@ -145,7 +206,7 @@ public:
         	for(size_type i = 0; i < _capacity; i++) {
 				_allocator.construct(newdata + i, _data[i]);
         	}
-			_allocator.construct(newdata+_capacity, val);
+			_allocator.construct(newdata +_capacity, val);
 			_size++;
 			for(size_type i = 0; i < _capacity; i++) {
 				_allocator.destroy(_data + i);
@@ -164,11 +225,54 @@ public:
 		}
     }
 
-// удаляет последний элемент, УБ если вектор пустой
-//     void pop_back(); // remove the last element, decrease size by 1
+    void pop_back()
+	{
+		_allocator.destroy(&(this->back()));
+		_size--;
+	}
 
-//  вставляет элемент на позицию, остальное сдвигается. возвращает итератор на новый элемент
-//     iterator insert (iterator position, const value_type& val); // insert new element before position
+    iterator insert (iterator position, const value_type& val)
+	{
+		if((_size + 1) <= _capacity)
+		{
+			for (Iterator it = Iterator(_data + _size); it != position - 1; it--)
+			{
+				_allocator.construct(&(*it), *(it - 1));
+				_allocator.destroy(&(*(it - 1)));
+			}
+			_allocator.construct(&(*position), val);
+			_size++;
+		}
+		else if ((_size + 1) > _capacity && _capacity)
+		{
+			T *newdata = _allocator.allocate(_capacity * 2);
+			
+			T *tmp = newdata;
+			for (Iterator it = this->begin(); it != position; it++)
+			{
+				_allocator.construct(tmp, *it);
+				_allocator.destroy(&(*it));
+				tmp++;
+			}
+			_allocator.construct(tmp, val);
+			tmp++;
+			for (Iterator it = position; it != this->end(); it++)
+			{
+				_allocator.construct(tmp, *it);
+				_allocator.destroy(&(*it));
+				tmp++;
+			}
+			_allocator.deallocate(_data, _capacity);
+			_data = newdata;
+			_size++;
+			_capacity *= 2;
+		}
+		else if (!_capacity)
+			this->push_back(val);
+		
+		
+		return position;
+	}
 
 //  вставляет n элементов начиная с позиции
 //     void insert (iterator position, size_type n, const value_type& val); // insert n elements before position
@@ -178,45 +282,35 @@ public:
 //     void insert (iterator position, InputIterator first, InputIterator last); // insert range elements before position
 
 //  удаляет элемент на позиции, возвращает итератор на следующий после удалённым элемент, либо end если удалили последний
-//     iterator erase (iterator position); // remove element on position
+    // iterator erase (iterator position)
+	// {
+
+	// }
 
 // удаляет диапазон элементов, возвращает то же
-//     iterator erase (iterator first, iterator last); // remove range of elements
+    // iterator erase (iterator first, iterator last)
+	// {
 
-//     void swap (vector& x); // swap content
+	// }
 
-// удалаяет вообще всё
-//     void clear(); // removes all elements, leaving container size = 0
+    // void swap (vector& x)
+	// {
 
-// };
+	// }
 
-
-
-
-/************* 6. NON-MEMBER OVERLOADS *************/
-
-// template <class T, class Alloc>
-//   bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs); // comparing sizes, if match - comparing elements
-
-// template <class T, class Alloc>
-//   bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
-
-// template <class T, class Alloc>
-//   bool operator<  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs); // lexicographical_compare 
-
-// template <class T, class Alloc>
-//   bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
-
-// template <class T, class Alloc>
-//   bool operator>  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
-
-// template <class T, class Alloc>
-//   bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
-
-// template <class T, class Alloc>
-//   void swap (vector<T,Alloc>& x, vector<T,Alloc>& y); // containers exchange references to their data, without copy or move elements
+    void clear()
+	{
+		pointer tmp = _data;
+		for(size_type i = 0; i < _size; i++)
+		{
+			_allocator.destroy(tmp);
+			tmp++;
+		}
+		_size = 0;
+	}
 
 
+// TODO!! сделать остальные итераторы наследниками
 class Iterator {
 private:
     pointer _current;
@@ -239,10 +333,10 @@ public:
     bool operator>=(Iterator const &src) { return (this->_current >= src._current); }
     bool operator>(Iterator const &src) { return (this->_current > src._current); }
 
-    Iterator &operator+(size_type n) { return (_current + n); }
-    Iterator &operator+=(size_type n) { return (_current + n); }
-    Iterator &operator-(size_type n) { return (_current - n); }
-    Iterator &operator-=(size_type n) { return (_current - n); }
+    Iterator operator+(size_type n) const { return Iterator(_current + n); }
+    Iterator &operator+=(size_type n)  { return Iterator(_current + n); }
+    Iterator operator-(size_type n) const { return Iterator(_current - n); }
+    Iterator &operator-=(size_type n) { return Iterator(_current - n); }
 };
 
 class CIterator {
@@ -329,8 +423,32 @@ public:
     CRIterator &operator-=(size_type n) { return (_current + n); }
 };
 
-
 }; // class bracket
+
+/************* 6. NON-MEMBER OVERLOADS *************/
+
+// template <class T, class Alloc>
+//   bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs); // comparing sizes, if match - comparing elements
+
+// template <class T, class Alloc>
+//   bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+
+// template <class T, class Alloc>
+//   bool operator<  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs); // lexicographical_compare 
+
+// template <class T, class Alloc>
+//   bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+
+// template <class T, class Alloc>
+//   bool operator>  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+
+// template <class T, class Alloc>
+//   bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+
+// template <class T, class Alloc>
+//   void swap (vector<T,Alloc>& x, vector<T,Alloc>& y); // containers exchange references to their data, without copy or move elements
+
+
 } // namespace bracket
 
 #endif
