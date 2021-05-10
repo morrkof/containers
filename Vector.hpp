@@ -4,6 +4,7 @@
 #include <memory>
 #include <limits>
 #include <cstddef> // linux
+#include <type_traits> // enable if
 
 namespace ft {
 
@@ -50,7 +51,8 @@ public:
       _capacity = 0;
     }
 
-    explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) {
+    explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) 
+	{
       _allocator = alloc;
       _data = _allocator.allocate(n);
       pointer tmp = _data;
@@ -63,26 +65,25 @@ public:
       _capacity = n;
     }
 
-// TODO!! (SFINAE)
-// размер last - first и копирует все значения из диапазона 
-    // template <class InputIterator>
-    // vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()) // range constructor, including first excluding last
-	// {
-	// 	_allocator = alloc;
-	// 	size_type n;
-	// 	for(iterator tmp = first; tmp != last; tmp++)
-	// 		n++;
-	// 	_data = _allocator.allocate(n);
-	// 	pointer tmp_data = _data;
-	// 	for(size_type i = 0; i < n; i++)
-	// 	{
-	// 		_allocator.construct(tmp_data, *first);
-	// 		tmp_data++;
-	// 		first++;
-	// 	}
-	// 	_size = n;
-	// 	_capacity = n;
-	// }
+    template <class InputIterator>
+    vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
+	// , std::enable_if<std::is_integral<InputIterator>::value, bool> = false)
+	{
+		
+		_allocator = alloc;
+		size_type n = 0;
+		for(iterator tmp = first; tmp != last; tmp++)
+			n++;
+		_data = _allocator.allocate(n);
+		pointer tmp_data = _data;
+		for(iterator tmp = first; tmp != last; tmp++)
+		{
+			_allocator.construct(tmp_data, *tmp);
+			tmp_data++;
+		}
+		_size = n;
+		_capacity = n;
+	}
 
     vector (const vector& x) { *this = x; }
 
