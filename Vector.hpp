@@ -16,12 +16,7 @@ private:
 	size_t _capacity;
 	size_t _size;
 
-	void	swap(T &a, T &b)
-	{
-		T c = a;
-		a = b;
-		b = c;
-	}
+
 
 public:
     class Iterator;
@@ -66,8 +61,8 @@ public:
     }
 
     template <class InputIterator>
-    vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
-	// , std::enable_if<std::is_integral<InputIterator>::value, bool> = false)
+    vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
+	typename std::enable_if<!std::numeric_limits<InputIterator>::is_specialized>::type* = NULL)
 	{
 		
 		_allocator = alloc;

@@ -41,10 +41,10 @@ void test_vector()
 
     ft::vector<std::string> ft_empty;
     std::cout << "ft  | Default constructor: size - " << ft_empty.size() << ", capacity - " << ft_empty.capacity() << std::endl;
-    std::vector<int> ft_zero((size_t)5);
+    std::vector<int> ft_zero(5);
     std::cout << "ft  | Fill constructor with default value: size - " << ft_zero.size() << ", capacity - " << ft_zero.capacity() 
     << ", elements: " << ft_zero[0] << " " << ft_zero[1] << " " << ft_zero[2] << " " << ft_zero[3] << " " << ft_zero[4] << std::endl;
-    ft::vector<int> ft_full((size_t)3, 42);
+    ft::vector<int> ft_full(3, 42);
     std::cout << "ft  | Fill constructor with value = 42: size - " << ft_full.size() << ", capacity - " << ft_full.capacity() 
     << ", elements: " << ft_full[0] << " " << ft_full[1] << " " << ft_full[2] << std::endl;
     
