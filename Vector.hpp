@@ -66,7 +66,6 @@ public:
       _capacity = n;
     }
 
-    // template <class InputIterator, typename = typename std::enable_if<!std::numeric_limits<InputIterator>::is_integer>::type>
 	template <class InputIterator>
 	vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), 
 	typename ft::EnableIf<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type = 0)
@@ -86,21 +85,18 @@ public:
 		_capacity = n;
 	}
 
-    vector (const vector& x) { *this = x; }
+    // vector (const vector& x) { *this = x; }
+
+    // vector& operator= (const vector& x)
+	// {
+	// 	// аллокатор нужен новый, перенести в него элементы
+	// }
 
     ~vector()
 	{
 		this->clear();
 		_allocator.deallocate(_data, _capacity);
 	}
-
-//  замещает содержимое текущего вектора копией вектора х
-    // vector& operator= (const vector& x)
-	// {
-	// 	// аллокатор нужен новый, перенести в него элементы
-	// }
-
-
 
 
 /************* 2. ITERATORS *************/
@@ -186,13 +182,24 @@ public:
 
 
 /************* 5. MODIFIERS *************/
-
+// replace content on range (destroy all old elements)
 //  эквивалентно clear + insert(begin, first, last)
-//     template <class InputIterator>
-//     void assign (InputIterator first, InputIterator last);	// replace content on range (destroy all old elements)
 
+    template <class InputIterator>
+    void assign (InputIterator first, InputIterator last, 
+	typename ft::EnableIf<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type = 0)
+	{
+		this->clear();
+		this->insert(this->begin(), first, last);
+	}
+
+// replace content of n elements, each value is val
 //  эквивалентно clear + insert(begin, n, u)
-//     void assign (size_type n, const value_type& val); // replace content of n elements, each value is val
+    void assign (size_type n, const value_type& val)
+	{
+		this->clear();
+		this->insert(this->begin(), n, val);
+	}
 
 	void push_back (const value_type& val) // add new element at the end, increase container size by 1
     {
@@ -235,6 +242,7 @@ public:
 
     iterator insert (iterator position, const value_type& val)
 	{
+		iterator result = position;
 		if((_size + 1) <= _capacity)
 		{
 			for (Iterator it = Iterator(_data + _size); it != position - 1; it--)
@@ -248,8 +256,8 @@ public:
 		else if ((_size + 1) > _capacity && _capacity)
 		{
 			T *newdata = _allocator.allocate(_capacity * 2);
-			
 			T *tmp = newdata;
+			
 			for (Iterator it = this->begin(); it != position; it++)
 			{
 				_allocator.construct(tmp, *it);
@@ -257,6 +265,7 @@ public:
 				tmp++;
 			}
 			_allocator.construct(tmp, val);
+			result = tmp;
 			tmp++;
 			for (Iterator it = position; it != this->end(); it++)
 			{
@@ -271,29 +280,141 @@ public:
 		}
 		else if (!_capacity)
 			this->push_back(val);
+		return result;
+	}
+
+    void insert (iterator position, size_type n, const value_type& val)
+	{
+		if((_size + n) <= _capacity)
+		{
+			for (Iterator it = Iterator(_data + _size + n); it != position - 1; it--)
+			{
+				_allocator.construct(&(*it), *(it - n));
+				_allocator.destroy(&(*(it - n)));
+			}
+			for (size_type i = 0; i < n; i++ )
+			{
+				_allocator.construct(&(*position), val);
+				position++;
+				_size++;
+			}
+		}
+		else if ((_size + n) > _capacity && _capacity)
+		{
+			T *newdata = _allocator.allocate(_size + n);
+			T *tmp = newdata;
+			for (Iterator it = this->begin(); it != position; it++)
+			{
+				_allocator.construct(tmp, *it);
+				_allocator.destroy(&(*it));
+				tmp++;
+			}
+			for (size_type i = 0; i < n; i++ )
+			{
+				_allocator.construct(tmp, val);
+				tmp++;
+			}
+			for (Iterator it = position; it != this->end(); it++)
+			{
+				_allocator.construct(tmp, *it);
+				_allocator.destroy(&(*it));
+				tmp++;
+			}
+			_allocator.deallocate(_data, _capacity);
+			_data = newdata;
+			_size = _size + n;
+			_capacity = _size;
+		}
+		else if (!_capacity)
+			for (size_type i = 0; i < n; i++)
+				this->push_back(val);
+	}
+
+//  if n > capacity then capacity + n (or size + n?)
+// if n < capacity then capacity * 2
+    template <class InputIterator>
+    void insert (iterator position, InputIterator first, InputIterator last, 
+	typename ft::EnableIf<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type = 0)
+	{
+		size_type len = 0;
+		for (InputIterator it = first; it != last; it++)
+			len++;
 		
-		
+		if((_size + len) <= _capacity)
+		{
+			for (Iterator it = Iterator(_data + _size + len); it != position - 1; it--)
+			{
+				_allocator.construct(&(*it), *(it - len));
+				_allocator.destroy(&(*(it - len)));
+			}
+			for (InputIterator it = first; it != last; it++)
+			{
+				_allocator.construct(&(*position), *it);
+				position++;
+				_size++;
+			}
+		}
+		else if ((_size + len) > _capacity && _capacity)
+		{
+			T *newdata = _allocator.allocate(_capacity * 2);
+			T *tmp = newdata;
+			for (Iterator it = this->begin(); it != position; it++)
+			{
+				_allocator.construct(tmp, *it);
+				_allocator.destroy(&(*it));
+				tmp++;
+			}
+			for (InputIterator it = first; it != last; it++)
+			{
+				_allocator.construct(tmp, *it);
+				tmp++;
+			}
+			for (Iterator it = position; it != this->end(); it++)
+			{
+				_allocator.construct(tmp, *it);
+				_allocator.destroy(&(*it));
+				tmp++;
+			}
+			_allocator.deallocate(_data, _capacity);
+			_data = newdata;
+			_size = _size + len;
+			_capacity *= 2;
+		}
+		else if (!_capacity)
+			for (InputIterator it = first; it != last; it++)
+				this->push_back(*it);
+	}
+
+    iterator erase (iterator position)
+	{
+		_allocator.destroy(&(*position));
+		for (iterator it = position + 1; it != this->end(); it++)
+		{
+			_allocator.construct(&(*it) - 1, *it);
+			_allocator.destroy(&(*it));	
+		}
+		_size--;
 		return position;
 	}
 
-//  вставляет n элементов начиная с позиции
-//     void insert (iterator position, size_type n, const value_type& val); // insert n elements before position
-
-//  вставляет диапазон элементов начиная с позиции
-//     template <class InputIterator>
-//     void insert (iterator position, InputIterator first, InputIterator last); // insert range elements before position
-
-//  удаляет элемент на позиции, возвращает итератор на следующий после удалённым элемент, либо end если удалили последний
-    // iterator erase (iterator position)
-	// {
-
-	// }
-
-// удаляет диапазон элементов, возвращает то же
-    // iterator erase (iterator first, iterator last)
-	// {
-
-	// }
+    iterator erase (iterator first, iterator last)
+	{
+		size_type len = 0;
+		for (iterator it = first; it != last; it++)
+		{
+			_allocator.destroy(&(*it));
+			len++;
+		}
+		iterator tmp = first;
+		for(iterator it = last; it != this->end(); it++)
+		{
+			_allocator.construct(&(*tmp), *it);
+			_allocator.destroy(&(*it));
+			tmp++;
+		}
+		_size -= len;
+		return first;
+	}
 
     // void swap (vector& x)
 	// {

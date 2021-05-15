@@ -9,7 +9,7 @@ void print_beautiful_title(std::string str)
 {
 	std::cout << "\e[1;33m";
     std::cout << std::endl;
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < 8; i++)
         std::cout << "✨";
     int a = (40 - str.size()) / 2;
     for (int i = 0; i < a; i++)
@@ -19,7 +19,7 @@ void print_beautiful_title(std::string str)
         std::cout << " ";
     if (str.size() % 2)
         std::cout << " ";
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < 8; i++)
         std::cout << "✨";
     std::cout << std::endl;
 	std::cout << "\e[0m";
