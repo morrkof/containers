@@ -4,9 +4,17 @@
 #include <memory>
 #include <limits>
 #include <cstddef> // linux
-#include <type_traits> // enable if
+// #include <type_traits> // enable if
 
 namespace ft {
+
+template <bool condition, typename Type>
+struct EnableIf;
+ 
+template <typename Type>
+struct EnableIf<true, Type>
+{ typedef Type type; };
+
 
 template <class T, class Alloc = std::allocator<T> >
 class vector {
@@ -15,8 +23,6 @@ private:
 	Alloc _allocator;
 	size_t _capacity;
 	size_t _size;
-
-
 
 public:
     class Iterator;
@@ -60,11 +66,11 @@ public:
       _capacity = n;
     }
 
-    template <class InputIterator>
-    vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
-	typename std::enable_if<!std::numeric_limits<InputIterator>::is_specialized>::type* = NULL)
+    // template <class InputIterator, typename = typename std::enable_if<!std::numeric_limits<InputIterator>::is_integer>::type>
+	template <class InputIterator>
+	vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), 
+	typename ft::EnableIf<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type = 0)
 	{
-		
 		_allocator = alloc;
 		size_type n = 0;
 		for(iterator tmp = first; tmp != last; tmp++)
