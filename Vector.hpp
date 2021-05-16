@@ -4,7 +4,6 @@
 #include <memory>
 #include <limits>
 #include <cstddef> // linux
-// #include <type_traits> // enable if
 
 namespace ft {
 
@@ -45,25 +44,26 @@ public:
 
 /************* 1. CONSTRUCTORS && DESTRUCTOR *************/
 
-    explicit vector (const allocator_type& alloc = allocator_type()) {
-      _allocator = alloc;
-      _data = NULL;
-      _size = 0;
-      _capacity = 0;
+    explicit vector (const allocator_type& alloc = allocator_type()) 
+	{
+    	_allocator = alloc;
+    	_data = NULL;
+    	_size = 0;
+    	_capacity = 0;
     }
 
     explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) 
 	{
-      _allocator = alloc;
-      _data = _allocator.allocate(n);
-      pointer tmp = _data;
-      for(size_type i = 0; i < n; i++)
-      {
-          _allocator.construct(tmp, val);
-          tmp++;
-      }
-      _size = n;
-      _capacity = n;
+    	_allocator = alloc;
+    	_data = _allocator.allocate(n);
+    	pointer tmp = _data;
+    	for(size_type i = 0; i < n; i++)
+    	{
+        	_allocator.construct(tmp, val);
+        	tmp++;
+    	}
+    	_size = n;
+    	_capacity = n;
     }
 
 	template <class InputIterator>
@@ -85,12 +85,26 @@ public:
 		_capacity = n;
 	}
 
-    // vector (const vector& x) { *this = x; }
+    vector (const vector& x) 
+	{
+		_data = NULL;
+		*this = x; 
+	}
 
-    // vector& operator= (const vector& x)
-	// {
-	// 	// аллокатор нужен новый, перенести в него элементы
-	// }
+    vector& operator= (const vector& x)
+	{
+		if (_data)
+		{
+			this->clear();
+			_allocator.deallocate(_data, _capacity);
+		}
+		_data = _allocator.allocate(x._capacity);
+		_capacity = x._capacity;
+		_size = x._size;
+		this->assign(x.begin(), x.end());
+		return *this;
+
+	}
 
     ~vector()
 	{
@@ -182,8 +196,6 @@ public:
 
 
 /************* 5. MODIFIERS *************/
-// replace content on range (destroy all old elements)
-//  эквивалентно clear + insert(begin, first, last)
 
     template <class InputIterator>
     void assign (InputIterator first, InputIterator last, 
@@ -193,15 +205,13 @@ public:
 		this->insert(this->begin(), first, last);
 	}
 
-// replace content of n elements, each value is val
-//  эквивалентно clear + insert(begin, n, u)
     void assign (size_type n, const value_type& val)
 	{
 		this->clear();
 		this->insert(this->begin(), n, val);
 	}
 
-	void push_back (const value_type& val) // add new element at the end, increase container size by 1
+	void push_back (const value_type& val)
     {
     	if (_size < _capacity)
     	{
@@ -416,10 +426,12 @@ public:
 		return first;
 	}
 
-    // void swap (vector& x)
-	// {
-
-	// }
+    void swap (vector& x)
+	{
+		vector tmp = *this;
+		*this = x;
+		x = tmp;
+	}
 
     void clear()
 	{
@@ -550,26 +562,69 @@ public:
 
 /************* 6. NON-MEMBER OVERLOADS *************/
 
-// template <class T, class Alloc>
-//   bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs); // comparing sizes, if match - comparing elements
+	template <class T, class Alloc>
+	bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		if (lhs.size() != rhs.size()) 
+			return false;
+		typename ft::vector<T>::iterator it_lhs = lhs.begin();
+		typename ft::vector<T>::iterator it_rhs = rhs.begin();
+		while (it_lhs != lhs.end() && it_rhs != rhs.end())
+		{
+			if(*it_lhs != *it_rhs)
+				return false;
+			it_lhs++;
+			it_rhs++;
+		}
+		return true;
+	}
 
-// template <class T, class Alloc>
-//   bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+	template <class T, class Alloc>
+	bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return !(rhs == lhs);
+	}
 
-// template <class T, class Alloc>
-//   bool operator<  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs); // lexicographical_compare 
+	template <class T, class Alloc>
+	bool operator<  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		typename ft::vector<T>::iterator it_lhs = lhs.begin();
+		typename ft::vector<T>::iterator it_rhs = rhs.begin();
+		while (it_lhs != lhs.end() && it_rhs != rhs.end())
+		{
+			if(*it_lhs < *it_rhs)
+				return true;
+			if(*it_lhs > *it_rhs)
+				return false;
+			it_lhs++;
+			it_rhs++;
+		}
+		return false;
+	}
 
-// template <class T, class Alloc>
-//   bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+	template <class T, class Alloc>
+	bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (!(rhs < lhs));
+	}
 
-// template <class T, class Alloc>
-//   bool operator>  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+	template <class T, class Alloc>
+	bool operator>  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (rhs < lhs);
+	}
 
-// template <class T, class Alloc>
-//   bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+	template <class T, class Alloc>
+	bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (!(lhs < rhs));
+	}
 
-// template <class T, class Alloc>
-//   void swap (vector<T,Alloc>& x, vector<T,Alloc>& y); // containers exchange references to their data, without copy or move elements
+	template <class T, class Alloc>
+	void swap (vector<T,Alloc>& x, vector<T,Alloc>& y)
+	{
+		x.swap(y);
+	}
 
 
 } // namespace bracket
