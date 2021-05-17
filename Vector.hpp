@@ -67,16 +67,16 @@ public:
     }
 
 	template <class InputIterator>
-	vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), 
-	typename ft::EnableIf<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type = 0)
+    vector (InputIterator first, typename ft::EnableIf<!std::numeric_limits<InputIterator>::is_integer, 
+	InputIterator>::type last, const allocator_type& alloc = allocator_type())
 	{
 		_allocator = alloc;
 		size_type n = 0;
-		for(iterator tmp = first; tmp != last; tmp++)
+		for(InputIterator tmp = first; tmp != last; tmp++)
 			n++;
 		_data = _allocator.allocate(n);
 		pointer tmp_data = _data;
-		for(iterator tmp = first; tmp != last; tmp++)
+		for(InputIterator tmp = first; tmp != last; tmp++)
 		{
 			_allocator.construct(tmp_data, *tmp);
 			tmp_data++;
@@ -444,8 +444,6 @@ public:
 		_size = 0;
 	}
 
-
-// TODO!! сделать остальные итераторы наследниками
 class Iterator {
 private:
     pointer _current;
@@ -489,7 +487,7 @@ public:
     CIterator &operator--() { _current--; return *this; } // prefix
     CIterator operator++(int) { CIterator tmp = *this; _current++; return tmp; } // postfix
     CIterator operator--(int) { CIterator tmp = *this; _current--; return tmp; } // postfix
-    bool operator==(CIterator const &src) { return (this->_current == src._current); } // friend?
+    bool operator==(CIterator const &src) { return (this->_current == src._current); }
     bool operator!=(CIterator const &src) { return (this->_current != src._current); }
     bool operator<=(CIterator const &src) { return (this->_current <= src._current); }
     bool operator<(CIterator const &src) { return (this->_current < src._current); }
@@ -567,8 +565,8 @@ public:
 	{
 		if (lhs.size() != rhs.size()) 
 			return false;
-		typename ft::vector<T>::iterator it_lhs = lhs.begin();
-		typename ft::vector<T>::iterator it_rhs = rhs.begin();
+		typename ft::vector<T>::const_iterator it_lhs = lhs.begin();
+		typename ft::vector<T>::const_iterator it_rhs = rhs.begin();
 		while (it_lhs != lhs.end() && it_rhs != rhs.end())
 		{
 			if(*it_lhs != *it_rhs)
@@ -588,8 +586,8 @@ public:
 	template <class T, class Alloc>
 	bool operator<  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
 	{
-		typename ft::vector<T>::iterator it_lhs = lhs.begin();
-		typename ft::vector<T>::iterator it_rhs = rhs.begin();
+		typename ft::vector<T>::const_iterator it_lhs = lhs.begin();
+		typename ft::vector<T>::const_iterator it_rhs = rhs.begin();
 		while (it_lhs != lhs.end() && it_rhs != rhs.end())
 		{
 			if(*it_lhs < *it_rhs)
@@ -625,7 +623,6 @@ public:
 	{
 		x.swap(y);
 	}
-
 
 } // namespace bracket
 
