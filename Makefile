@@ -1,13 +1,14 @@
 NAME = containers
 SRC = ./test/test.cpp ./test/vector.cpp
 OBJ = $(SRC:.cpp=.o)
-CFLAGS = -Wall -Wextra -Werror  -std=c++98
+CFLAGS = -g #-Wall -Wextra -Werror  -std=c++98
 
 .PHONY: all clean fclean re
 
 all: $(NAME)
 $(NAME): $(OBJ)
-	clang++ $(OBJ) $(CFLAGS) -o $(NAME) && ./$(NAME)
+	clang++ $(OBJ) $(CFLAGS) -o $(NAME)
+# && ./$(NAME)
 %.o: %.cpp
 	clang++ $(CFLAGS) -c $< -o $@
 clean:

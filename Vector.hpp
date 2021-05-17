@@ -93,6 +93,8 @@ public:
 
     vector& operator= (const vector& x)
 	{
+		// allocator_type _allocator = allocator_type();
+		// _allocator = std::allocator<T>(x._allocator);
 		if (_data)
 		{
 			this->clear();
@@ -352,10 +354,22 @@ public:
 		
 		if((_size + len) <= _capacity)
 		{
-			for (Iterator it = Iterator(_data + _size + len); it != position - 1; it--)
+			if (_size)
 			{
-				_allocator.construct(&(*it), *(it - len));
-				_allocator.destroy(&(*(it - len)));
+				Iterator it = this->end() - 1;
+				Iterator it_end = Iterator(_data + _size + len - 1);
+				while (it != (position - 1))
+				{
+					_allocator.construct(&(*it_end), *it);
+				 	_allocator.destroy(&(*it));
+					 it--;
+					 it_end--;
+				}
+				// for (Iterator it = Iterator(_data + _size + len - 1); it != position - 1; it--)
+				// {
+				// 	_allocator.construct(&(*it), *(it - len));
+				// 	_allocator.destroy(&(*(it - len)));
+				// }
 			}
 			for (InputIterator it = first; it != last; it++)
 			{
