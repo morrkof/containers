@@ -4,7 +4,7 @@
 template <typename T>
 std::ostream &operator<<(std::ostream &os, ft::vector<T> &src)
 {
-	os << "size = " << src.size() << ", capacity = " << src.capacity() << ", elements: ";
+	os << "ft  | size = " << src.size() << ", capacity = " << src.capacity() << ", elements: ";
 	for (size_t i = 0; i < src.size(); i++)
 		os << src[i] << " ";
 	os << std::endl;
@@ -14,7 +14,7 @@ std::ostream &operator<<(std::ostream &os, ft::vector<T> &src)
 template <typename T>
 std::ostream &operator<<(std::ostream &os, std::vector<T> &src)
 {
-	os << "size = " << src.size() << ", capacity = " << src.capacity() << ", elements: ";
+	os << "std | size = " << src.size() << ", capacity = " << src.capacity() << ", elements: ";
 	for (size_t i = 0; i < src.size(); i++)
 		os << src[i] << " ";
 	os << std::endl;
@@ -387,7 +387,13 @@ void test_vector()
 	// ft_push.clear();
 	// std::cout << "ft  | after clear: " << ft_push;
 
-	
+	std::vector<std::string> v_str(5, "kek");
+	ft::vector<std::string> ft_str(5, "kek");
+	v_str.push_back("cheburek");
+	v_str.insert(v_str.begin(), "lol");
+	ft_str.push_back("cheburek");
+	ft_str.insert(ft_str.begin(), "lol");
+	std::cout << "Vector of strings:" << std::endl << v_str << ft_str;
 
     print_beautiful_title("6. TESTING NON-MEMBER OVERLOADS:");
 // swap+, ==, !=, <, <=, >, >=,
