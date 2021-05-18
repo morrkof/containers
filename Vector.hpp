@@ -93,8 +93,6 @@ public:
 
     vector& operator= (const vector& x)
 	{
-		// allocator_type _allocator = allocator_type();
-		// _allocator = std::allocator<T>(x._allocator);
 		if (_data)
 		{
 			this->clear();

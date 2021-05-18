@@ -8,7 +8,6 @@ namespace ft {
 
 template < class T, class Alloc = std::allocator<T> >
 class list {
-private:
 
 public:
     class Iterator;
@@ -27,6 +26,14 @@ public:
     typedef ptrdiff_t			difference_type;
     typedef size_t				size_type;
 
+    struct      Node {
+        Node    *prev;
+        Node	*next;
+        T		value;
+    };
+	private:
+		Node *head;
+	
 /************* 1. CONSTRUCTORS && DESTRUCTOR *************/
 
     // explicit list (const allocator_type& alloc = allocator_type()) { }
@@ -75,16 +82,18 @@ public:
 
     // template <class InputIterator>
     // void assign (InputIterator first, InputIterator last);	// replace content on range (destroy all old elements)
-    // void assign (size_type n, const value_type& val); // replace content of n elements, each value is val
 
+    // void assign (size_type n, const value_type& val); // replace content of n elements, each value is val
     // void push_front (const value_type& val);
     // void pop_front();
 	// void push_back (const value_type& val); // add new element at the end, increase container size by 1
     // void pop_back(); // remove the last element, decrease size by 1
     // iterator insert (iterator position, const value_type& val); // insert new element before position
     // void insert (iterator position, size_type n, const value_type& val); // insert n elements before position
+
     // template <class InputIterator>
     // void insert (iterator position, InputIterator first, InputIterator last); // insert range elements before position
+
     // iterator erase (iterator position); // remove element on position
     // iterator erase (iterator first, iterator last); // remove range of elements
     // void swap (list& x); // swap content
@@ -101,18 +110,22 @@ public:
     // void splice (iterator position, list& x, iterator first, iterator last);
 
     // void remove (const value_type& val); // remove elements with specific value
+
     // template <class Predicate>
     // void remove_if (Predicate pred); // Remove elements fulfilling condition
 
     // void unique();
+
     // template <class BinaryPredicate>
     // void unique (BinaryPredicate binary_pred); // Remove duplicate values
 
     // void merge (list& x); // merge sorted list
+
     // template <class Compare>
     // void merge (list& x, Compare comp);
 
     // void sort();
+	
     // template <class Compare>
     // void sort (Compare comp);
 
