@@ -54,36 +54,28 @@ void test_vector()
 
     std::cout << "std | Iterating...  ";
     for(std::vector<int>::iterator it = v_iter.begin(); it != v_iter.end(); it++)
-    {
         std::cout << *it << "  ";
-    }
     std::cout << std::endl;
 
     std::cout << "ft  | Iterating...  ";
     for(ft::vector<int>::iterator it = ft_iter.begin(); it != ft_iter.end(); it++)
-    {
         std::cout << *it << "  ";
-    }
     std::cout << std::endl;
 	
 	std::cout << "std | Reverse iterating...  ";
     for(std::vector<int>::reverse_iterator it = v_iter.rbegin(); it != v_iter.rend(); it++)
-    {
         std::cout << *it << "  ";
-    }
     std::cout << std::endl;
 
 	std::cout << "ft  | Reverse Iterating...  ";
     for(ft::vector<int>::reverse_iterator it = ft_iter.rbegin(); it != ft_iter.rend(); it++)
-    {
         std::cout << *it << "  ";
-    }
     std::cout << std::endl;
 
 
 
     print_beautiful_title("3. TESTING CAPACITY:");
-    std::cout << "............. SIZE && CAPACITY:" << std::endl;
+    std::cout << std::endl << "............. SIZE && CAPACITY:" << std::endl;
     std::vector<int> v;
 	ft::vector<int> ft_v;
     std::cout << "Increasing..." << std::endl;
@@ -107,7 +99,7 @@ void test_vector()
 		 << " cpct: " <<  std::setfill(' ') << std::setw(3) << ft_v.capacity() << std::endl;
     }
 
-	std::cout << "............. RESIZE:" << std::endl;
+	std::cout << std::endl << "............. RESIZE:" << std::endl;
 	std::cout << "Before resize: " << std::endl << v << ft_v;
 	v.resize(20, 777);
 	ft_v.resize(20, 777);
@@ -116,19 +108,19 @@ void test_vector()
 	ft_v.resize(3, 100);
 	std::cout << "After resize to 3: " << std::endl << v << ft_v;
 
-	std::cout << "............. RESERVE:" << std::endl;
+	std::cout << std::endl << "............. RESERVE:" << std::endl;
 	v.reserve(777);
 	ft_v.reserve(777);
-	std::cout << "Reserve 777 capacity:" << std::endl << v << ft_v << std::endl;
+	std::cout << "Reserve 777 capacity:" << std::endl << v << ft_v;
 	v.reserve(10000);
 	ft_v.reserve(10000);
-	std::cout << "Reserve 10000 capacity:" << std::endl << v << ft_v << std::endl;
+	std::cout << "Reserve 10000 capacity:" << std::endl << v << ft_v;
 
-    std::cout << "............. MAX SIZE:" << std::endl;
+    std::cout << std::endl << "............. MAX SIZE:" << std::endl;
     std::cout << "std | MAX SIZE is " << v.max_size() << std::endl;
     std::cout << "ft  | MAX SIZE is " << ft_v.max_size() << std::endl;
 
-    std::cout << "............. EMPTY:" << std::endl;
+    std::cout << std::endl << "............. EMPTY:" << std::endl;
     std::vector<int> v_emp;
     ft::vector<int> ft_emp;
     std::cout << "std | IS EMPTY? (-) " << v.empty() << std::endl;
@@ -147,11 +139,11 @@ void test_vector()
 		ft_at.push_back(i);
 	}
 
-    std::cout << "............. ACCESS VIA SQUARE BRACKETS:" << std::endl;
+    std::cout << std::endl << "............. ACCESS VIA SQUARE BRACKETS:" << std::endl;
     std::cout << "std | elements [0], [1], [2] : " << v_at[0] << " " << v_at[1] << " " << v_at[2] << std::endl;
     std::cout << "ft  | elements [0], [1], [2] : " << ft_at[0] << " " << ft_at[1] << " " << ft_at[2] << std::endl;
 
-    std::cout << "............. AT AND THROWING EXCEPTION:" << std::endl;
+    std::cout << std::endl << "............. AT AND THROWING EXCEPTION:" << std::endl;
     std::cout << "std | AT [0] " << v_at.at(0) << std::endl;
 	std::cout << "ft  | AT [0] " << ft_at.at(0) << std::endl;
     try 
@@ -171,234 +163,200 @@ void test_vector()
         std::cerr << "Error: " << e.what() << std::endl;
     }
 
-	std::cout << "............. FRONT && BACK:" << std::endl;
+	std::cout << std::endl << "............. FRONT && BACK:" << std::endl;
     std::cout << "std | FRONT element: " << v_at.front() << ", BACK element: " << v_at.back() << std::endl;
     std::cout << "ft  | FRONT element: " << ft_at.front() << ", BACK element: " << ft_at.back() << std::endl;
 
 
 
     print_beautiful_title("5. TESTING MODIFIERS:");
-// // assign, push_back+, pop_back+, insert, erase, swap, clear+
-//     std::cout << "............. PUSH_BACK:" << std::endl;
-    // std::vector<int> v_push;
-    // int j = 0;
-    // for(int i = 42; i < 45; i++)
-    // {
-    //     v_push.push_back(i);
-        // std::cout << "std | Push_back: added element - " << v_push[j] << ", size - " << v_push.size() << ", capacity - " << v_push.capacity() << std::endl;
-    //     j++;
-    // }
+
+	std::vector<int> v_push;
+	ft::vector<int> ft_push;
+
+	std::cout << std::endl << "............. PUSH_BACK:" << std::endl;
+    for(int i = 42; i < 47; i++)
+    {
+        v_push.push_back(i);
+		ft_push.push_back(i);
+        std::cout << "Push_back: added element!" << std::endl << v_push << ft_push; 
+    }
    
-    // ft::vector<int> ft_push;
-    // j = 0;
-    // for(int i = 42; i < 45; i++)
-    // {
-    //     ft_push.push_back(i);
-        // std::cout << "ft  | Push_back: added element - " << ft_push[j] << ", size - " << ft_push.size() << ", capacity - " << ft_push.capacity() << std::endl;
-    //     j++;
-    // }
+	std::cout << std::endl << "............. POP_BACK:" << std::endl;
+	v_push.pop_back();
+	ft_push.pop_back();
+	std::cout << "Pop_back: deleted last element, now... " << std::endl << v_push << ft_push;
+	v_push.pop_back();
+	ft_push.pop_back();
+	std::cout << "Pop_back: deleted last element, now... " << std::endl << v_push << ft_push;
 
-// 	std::cout << "............. POP_BACK:" << std::endl;
-// 	v_push.pop_back();
-// 	ft_push.pop_back();
-// 	std::cout << "std | Pop_back: deleted last element, now size - " << v_push.size() << ", capacity - " << v_push.capacity() << std::endl;
-// 	std::cout << "ft  | Pop_back: deleted last element, now size - " << ft_push.size() << ", capacity - " << ft_push.capacity() << std::endl;
+	std::cout << std::endl << "............. INSERT SINGLE ELEMENT:" << std::endl;
+	v_push.insert(v_push.begin(), 666);
+	ft_push.insert(ft_push.begin(), 666);
+	std::cout << "Inserting element, now... " << std::endl << v_push << ft_push;
+	v_push.insert(v_push.end(), 555);
+	ft_push.insert(ft_push.end(), 555);
+	std::cout << "Inserting element, now... " << std::endl << v_push << ft_push;
+	v_push.insert(v_push.begin(), 444);
+	ft_push.insert(ft_push.begin(), 444);
+	std::cout << "Inserting element, now... " << std::endl << v_push << ft_push;
+	v_push.insert(v_push.end(), 333);
+	ft_push.insert(ft_push.end(), 333);
+	std::cout << "Inserting element, now... " << std::endl << v_push << ft_push;
+	v_push.insert(v_push.begin(), 222);
+	ft_push.insert(ft_push.begin(), 222);
+	std::cout << "Inserting element, now... " << std::endl << v_push << ft_push;
+	v_push.insert(v_push.end(), 111);
+	ft_push.insert(ft_push.end(), 111);
+	std::cout << "Inserting element, now... " << std::endl << v_push << ft_push;
 
-// 	std::cout << "............. INSERT SINGLE ELEMENT:" << std::endl;
-	// v_push.insert(v_push.begin(), 666);
-	// v_push.insert(v_push.end(), 555);
-	// v_push.insert(v_push.begin(), 444);
-	// v_push.insert(v_push.begin(), 333);
-	// v_push.insert(v_push.begin(), 222);
-	// v_push.insert(v_push.begin(), 111);
-	// v_push.insert(v_push.begin(), 700);
+	std::cout << std::endl << "............. INSERT MULTIPLY ELEMENTS:" << std::endl;
+	v_push.insert(v_push.begin() + 5, 9, 11);
+	ft_push.insert(ft_push.begin() + 5, 9, 11);
+	std::cout << "Inserting 9 elements '11', now... " << std::endl << v_push << ft_push;
 
-// 	std::cout << "std | size = " << v_push.size() << ", capacity = " << v_push.capacity() << ", elements: ";
-// 	for(size_t i = 0; i < v_push.size(); i++)
-// 	{
-// 		std::cout << v_push[i] << " ";
-// 	}
-// 	std::cout << std::endl;
-
-	// ft_push.insert(ft_push.begin(), 666);
-	// ft_push.insert(ft_push.end(), 555);
-	// ft_push.insert(ft_push.begin(), 444);
-	// ft_push.insert(ft_push.begin(), 333);
-	// ft_push.insert(ft_push.begin(), 222);
-	// ft_push.insert(ft_push.begin(), 111);
-	// ft_push.insert(ft_push.begin(), 700);
-
-
-// 	std::cout << "ft  | size = " << ft_push.size() << ", capacity = " << ft_push.capacity() << ", elements: ";
-// 	for(size_t i = 0; i < ft_push.size(); i++)
-// 	{
-// 		std::cout << ft_push[i] << " ";
-// 	}
-// 	std::cout << std::endl;		
+	std::cout << std::endl << "............. INSERT RANGE:" << std::endl;
+	std::vector<int> v_pushrange(10);
+	ft::vector<int> ft_pushrange(10);
+	v_pushrange.insert(v_pushrange.begin(), v_push.begin(), v_push.begin() + 5);
+	ft_pushrange.insert(ft_pushrange.begin(), ft_push.begin(), ft_push.begin() + 5);
+	std::cout << "Inserting range elements to vector, now... " << std::endl << v_pushrange << ft_pushrange;
 
 
-// 	std::cout << "............. INSERT MULTIPLY ELEMENTS:" << std::endl;
 
-// 	std::vector<int>::iterator stdit = v_push.begin() + 5;
-// 	ft::vector<int>::iterator ftit = ft_push.begin() + 5;
+	std::cout << std::endl << "............. ERASE SINGLE ELEMENT:" << std::endl;
+	{
+	std::vector<int> v_erase;
+	for(size_t i = 1; i < 10; i++)
+		v_erase.push_back(i);
+	std::cout << "std | create this:  " << v_erase;
+	v_erase.erase(v_erase.begin());
+	std::cout << "std | erase first:  " << v_erase;
+	v_erase.erase(v_erase.begin() + 5);
+	std::cout << "std | erase 7:  " << v_erase;
+	}
+	{
+	ft::vector<int> ft_erase;
+	for(size_t i = 1; i < 10; i++)
+		ft_erase.push_back(i);
+	std::cout << "ft  | create this:  " << ft_erase;
+	ft_erase.erase(ft_erase.begin());
+	std::cout << "ft  | erase first:  " << ft_erase;
+	ft_erase.erase(ft_erase.begin() + 5);
+	std::cout << "ft  | erase 7:  " << ft_erase;
+	}
 
-// 	v_push.insert(stdit, 20, 55);
-// 	ft_push.insert(ftit, 20, 55);
-// 	std::cout << "std | size = " << v_push.size() << ", capacity = " << v_push.capacity() << ", elements: ";
-// 	for(size_t i = 0; i < v_push.size(); i++)
-// 	{
-// 		std::cout << v_push[i] << " ";
-// 	}
-// 	std::cout << std::endl;
-
-// 	std::cout << "ft  | size = " << ft_push.size() << ", capacity = " << ft_push.capacity() << ", elements: ";
-// 	for(size_t i = 0; i < ft_push.size(); i++)
-// 	{
-// 		std::cout << ft_push[i] << " ";
-// 	}
-// 	std::cout << std::endl;	
-
-
-	// std::cout << "............. INSERT RANGE:" << std::endl;
-
-	// std::vector<int> v_pushrange(10);
-	// v_pushrange.pop_back();
-
-	// v_pushrange.insert(v_pushrange.begin(), v_push.begin(), v_push.begin() + 5);
-	// std::cout << "std | range insert (5 elements):  size = " << v_pushrange.size() << ", capacity = " << v_pushrange.capacity() << ", elements: ";
-	// for(size_t i = 0; i < v_pushrange.size(); i++)
-	// {
-	// 	std::cout << v_pushrange[i] << " ";
-	// }
-	// std::cout << std::endl; // check this on MacOS
-
-	// ft::vector<int> ft_pushrange(10);
-	// ft_pushrange.pop_back();
-
-	// ft_pushrange.insert(ft_pushrange.begin(), ft_push.begin(), ft_push.begin() + 5);
-	// std::cout << "ft  | size = " << ft_pushrange.size() << ", capacity = " << ft_pushrange.capacity() << ", elements: ";
-	// for(size_t i = 0; i < ft_pushrange.size(); i++)
-	// {
-	// 	std::cout << ft_pushrange[i] << " ";
-	// }
-	// std::cout << std::endl;
-
-// 	std::cout << "............. ERASE SINGLE ELEMENT:" << std::endl;
-// 	{
-// 	std::vector<int> v_erase;
-// 	for(size_t i = 1; i < 10; i++)
-// 		v_erase.push_back(i);
-// 	std::cout << "std | create this:  " << v_erase;
-// 	v_erase.erase(v_erase.begin());
-// 	std::cout << "std | erase first:  " << v_erase;
-// 	v_erase.erase(v_erase.begin() + 5);
-// 	std::cout << "std | erase 7:  " << v_erase;
-// 	}
-// 	{
-// 	ft::vector<int> ft_erase;
-// 	for(size_t i = 1; i < 10; i++)
-// 		ft_erase.push_back(i);
-// 	std::cout << "ft  | create this:  " << ft_erase;
-// 	ft_erase.erase(ft_erase.begin());
-// 	std::cout << "ft  | erase first:  " << ft_erase;
-// 	ft_erase.erase(ft_erase.begin() + 5);
-// 	std::cout << "ft  | erase 7:  " << ft_erase;
-// 	}
-
-// 	std::cout << "............. ERASE MULTIPLY ELEMENTS:" << std::endl;
-// 	{
-// 	std::vector<int> v_erase;
-// 	for(size_t i = 1; i < 10; i++)
-// 		v_erase.push_back(i);
-// 	std::cout << "std | create this:  " << v_erase;
-// 	v_erase.erase(v_erase.begin(), v_erase.begin() + 3);
-// 	std::cout << "std | erase first:  " << v_erase;
-// 	}
-// 	{
-// 	ft::vector<int> ft_erase;
-// 	for(size_t i = 1; i < 10; i++)
-// 		ft_erase.push_back(i);
-// 	std::cout << "ft  | create this:  " << ft_erase;
-// 	ft_erase.erase(ft_erase.begin(), ft_erase.begin() + 3);
-// 	std::cout << "ft  | erase first:  " << ft_erase;
-// 	}
+	std::cout << std::endl << "............. ERASE MULTIPLY ELEMENTS:" << std::endl;
+	{
+	std::vector<int> v_erase;
+	for(size_t i = 1; i < 10; i++)
+		v_erase.push_back(i);
+	std::cout << "std | create this:  " << v_erase;
+	v_erase.erase(v_erase.begin(), v_erase.begin() + 3);
+	std::cout << "std | erase first:  " << v_erase;
+	}
+	{
+	ft::vector<int> ft_erase;
+	for(size_t i = 1; i < 10; i++)
+		ft_erase.push_back(i);
+	std::cout << "ft  | create this:  " << ft_erase;
+	ft_erase.erase(ft_erase.begin(), ft_erase.begin() + 3);
+	std::cout << "ft  | erase first:  " << ft_erase;
+	}
 
 
-// 	std::cout << "............. ASSIGN:" << std::endl;
+	std::cout << std::endl << "............. ASSIGN:" << std::endl;
 
-// 	{
-// 		std::vector<int> v_assign;
-// 		for(size_t i = 0; i < 20; i++)
-// 			v_assign.push_back(i);
-// 		std::cout << "std | create this: " << v_assign;
-// 		v_assign.assign(5, 42);
-// 		std::cout << "std | after assign 5/42: " << v_assign;
-// 	}
+	{
+		std::vector<int> v_assign;
+		for(size_t i = 0; i < 20; i++)
+			v_assign.push_back(i);
+		std::cout << "std | create this: " << v_assign;
+		v_assign.assign(5, 42);
+		std::cout << "std | after assign 5/42: " << v_assign;
+	}
 
-// 	{
-// 		ft::vector<int> ft_assign;
-// 		for(size_t i = 0; i < 20; i++)
-// 			ft_assign.push_back(i);
-// 		std::cout << "ft  | create this: " << ft_assign;
-// 		ft_assign.assign(5, 42);
-// 		std::cout << "ft  | after assign 5/42: " << ft_assign;
-// 	}
+	{
+		ft::vector<int> ft_assign;
+		for(size_t i = 0; i < 20; i++)
+			ft_assign.push_back(i);
+		std::cout << "ft  | create this: " << ft_assign;
+		ft_assign.assign(5, 42);
+		std::cout << "ft  | after assign 5/42: " << ft_assign;
+	}
 
 
 
 
-// 	std::cout << "IF CAPACITY = 0 ???" << std::endl;
-// 	std::vector<int> v_test;
-// 	std::cout << "created : " << v_test;
-// 	v_test.insert(v_test.begin(), 678);
-// 	std::cout << "now1 : " << v_test;
-// 	v_test.insert(v_test.begin(), 123);
-// 	std::cout << "now2 : " << v_test;
-// 	v_test.insert(v_test.begin(), 45);
-// 	std::cout << "now3 : " << v_test;
+	std::cout << "IF CAPACITY = 0 ???" << std::endl;
+	std::vector<int> v_test;
+	std::cout << "created : " << v_test;
+	v_test.insert(v_test.begin(), 678);
+	std::cout << "now1 : " << v_test;
+	v_test.insert(v_test.begin(), 123);
+	std::cout << "now2 : " << v_test;
+	v_test.insert(v_test.begin(), 45);
+	std::cout << "now3 : " << v_test;
 
 
 
 
 
-// 	std::cout << "CLEAR:" << std::endl;
-// 	v_push.clear();
-// 	std::cout << "std | after clear: " << v_push;
+	std::cout << std::endl << "CLEAR:" << std::endl;
+	v_push.clear();
+	ft_push.clear();
+	std::cout << "std | after clear: " << v_push;
+	std::cout << "ft  | after clear: " << ft_push;
 
-// 	ft_push.clear();
-// 	std::cout << "ft  | after clear: " << ft_push;
 
-// 	std::vector<std::string> v_str(5, "kek");
-// 	ft::vector<std::string> ft_str(5, "kek");
-// 	v_str.push_back("cheburek");
-// 	v_str.insert(v_str.begin(), "lol");
-// 	ft_str.push_back("cheburek");
-// 	ft_str.insert(ft_str.begin(), "lol");
-// 	std::cout << "Vector of strings:" << std::endl << v_str << ft_str;
 
-    // print_beautiful_title("6. TESTING NON-MEMBER OVERLOADS:");
-// // swap+, ==, !=, <, <=, >, >=,
+	std::cout << std::endl << "............. SWAP:" << std::endl;
 
-// 	std::swap(v_zero, v_full);
-// 	std::cout << "after 1 swap:" << std::endl <<  "zero - " << v_zero << "fill - " << v_full;
-// 	v_zero.swap(v_full);
-// 	std::cout << "after 2 swap:" << std::endl <<  "zero - " << v_zero << "fill - " << v_full;
-// 	ft::swap(ft_zero, ft_full);
-// 	std::cout << "after 1 swap:" << std::endl <<  "zero - " << ft_zero << "fill - " << ft_full;
-// 	ft_zero.swap(ft_full);
-// 	std::cout << "after 2 swap:" << std::endl <<  "zero - " << ft_zero << "fill - " << ft_full;
+	std::cout << "before swap:" << std::endl <<  "1st - " << v_zero << "2nd - " << v_full
+	<<  "1st - " << ft_zero << "2nd - " << ft_full << std::endl ;
+	v_zero.swap(v_full);
+	ft_zero.swap(ft_full);
+	std::cout << "after swap (method):" << std::endl <<  "1st - " << v_zero << "2nd - " << v_full
+	<<  "1st - " << ft_zero << "2nd - " << ft_full << std::endl ;
 
-// 	std::cout << "std | 1 == 2 ? " << (v_zero == v_full) << std::endl;
-// 	std::cout << "ft  | 1 == 2 ? " << (ft_zero == ft_full) << std::endl;
-// 	std::cout << "std | 1 != 2 ? " << (v_zero != v_full) << std::endl;
-// 	std::cout << "ft  | 1 != 2 ? " << (ft_zero != ft_full) << std::endl;
+	std::swap(v_zero, v_full);
+	ft::swap(ft_zero, ft_full);
+	std::cout << "after swap (non-member):" << std::endl <<  "1st - " << ft_zero << "2nd - " << ft_full
+	<<  "1st - " << v_zero << "2nd - " << v_full << std::endl ;
 
-// 	std::cout << "std | 1 > 2 ? " << (v_zero > v_full) << std::endl;
-// 	std::cout << "ft  | 1 > 2 ? " << (ft_zero > ft_full) << std::endl;
-// 	std::cout << "std | 1 >= 2 ? " << (v_zero >= v_full) << std::endl;
-// 	std::cout << "ft  | 1 >= 2 ? " << (ft_zero >= ft_full) << std::endl;
-// 	std::cout << "std | 1 < 2 ? " << (v_zero < v_full) << std::endl;
-// 	std::cout << "ft  | 1 < 2 ? " << (ft_zero < ft_full) << std::endl;
-// 	std::cout << "std | 1 <= 2 ? " << (v_zero <= v_full) << std::endl;
-// 	std::cout << "ft  | 1 <= 2 ? " << (ft_zero <= ft_full) << std::endl;
+
+    print_beautiful_title("6. TESTING NON-MEMBER OVERLOADS:");
+	std::cout << "std | 1 == 2 ? " << (v_zero == v_full) << std::endl;
+	std::cout << "ft  | 1 == 2 ? " << (ft_zero == ft_full) << std::endl;
+	std::cout << "std | 1 != 2 ? " << (v_zero != v_full) << std::endl;
+	std::cout << "ft  | 1 != 2 ? " << (ft_zero != ft_full) << std::endl;
+	std::cout << "std | 1 > 2 ? " << (v_zero > v_full) << std::endl;
+	std::cout << "ft  | 1 > 2 ? " << (ft_zero > ft_full) << std::endl;
+	std::cout << "std | 1 >= 2 ? " << (v_zero >= v_full) << std::endl;
+	std::cout << "ft  | 1 >= 2 ? " << (ft_zero >= ft_full) << std::endl;
+	std::cout << "std | 1 < 2 ? " << (v_zero < v_full) << std::endl;
+	std::cout << "ft  | 1 < 2 ? " << (ft_zero < ft_full) << std::endl;
+	std::cout << "std | 1 <= 2 ? " << (v_zero <= v_full) << std::endl;
+	std::cout << "ft  | 1 <= 2 ? " << (ft_zero <= ft_full) << std::endl;
+
+
+	print_beautiful_title("6. TESTING OTHER:");
+	std::cout << std::endl << "............. VECTOR OF STRINGS:" << std::endl;
+	std::vector<std::string> v_str(5, "kek");
+	ft::vector<std::string> ft_str(5, "kek");
+	v_str.push_back("cheburek");
+	v_str.insert(v_str.begin(), "lol");
+	ft_str.push_back("cheburek");
+	ft_str.insert(ft_str.begin(), "lol");
+	std::cout << v_str << ft_str;
+
+	std::cout << std::endl << "............. VECTOR OF AWESOMENESS:" << std::endl;
+	std::vector<Awesome> v_awesome(1, 13);
+	ft::vector<Awesome> ft_awesome(1, 13);
+
+	v_awesome.push_back(133);
+	ft_awesome.push_back(133);
+
+	std::cout << "std | " << v_awesome[0].getN() << " " << v_awesome[1].getN() << std::endl;
+	std::cout << "ft  | " << ft_awesome[0].getN() << " " << ft_awesome[1].getN() << std::endl;
 }

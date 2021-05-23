@@ -1,0 +1,122 @@
+template < typename T >
+void bubble_sort( T &a )
+{
+    for( T::size_type i = 0; a.size() && i < a.size() - 1; ++i )
+    {
+        for( T::size_type j = i; j + 1 > 0; --j )
+        {
+            if( a[j] > a[j+1] )
+                std::swap( a[j], a[j+1] );
+        }
+    }
+}
+
+t_list	*ft_lstnew(void *content)
+{
+	t_list *new;
+
+	new = (t_list *)malloc(sizeof(t_list));
+	if (new == NULL)
+		return (NULL);
+	new->content = content;
+	new->next = NULL;
+	return (new);
+}
+
+int	ft_lstsize(t_list *lst)
+{
+	int i;
+
+	i = 0;
+	while (lst != NULL)
+	{
+		lst = lst->next;
+		i++;
+	}
+	return (i);
+}
+
+t_list	*ft_lstlast(t_list *lst)
+{
+	int		i;
+	t_list	*last;
+
+	i = 1;
+	last = lst;
+	while (i < ft_lstsize(lst))
+	{
+		last = last->next;
+		i++;
+	}
+	return (last);
+}
+
+void	ft_lstadd_back(t_list **lst, t_list *new)
+{
+	t_list	*last;
+
+	if (*lst == NULL)
+	{
+		*lst = new;
+		return ;
+	}
+	last = ft_lstlast(*lst);
+	last->next = new;
+	new->next = NULL;
+}
+
+void	ft_lstadd_front(t_list **lst, t_list *new)
+{
+	new->next = *lst;
+	*lst = new;
+}
+
+void	ft_lstdelone(t_list *lst, void (*del)(void *))
+{
+	del(lst->content);
+	free(lst);
+}
+
+void	ft_lstclear(t_list **lst, void (*del)(void *))
+{
+	t_list *nxt;
+	t_list *cur;
+
+	cur = *lst;
+	while (cur != NULL)
+	{
+		nxt = cur->next;
+		ft_lstdelone(cur, del);
+		cur = nxt;
+	}
+	*lst = NULL;
+}
+
+void	ft_lstiter(t_list *lst, void (*f)(void *))
+{
+	while (lst != NULL)
+	{
+		f(lst->content);
+		lst = lst->next;
+	}
+}
+
+t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
+{
+	t_list *newlist;
+	t_list *new;
+
+	newlist = NULL;
+	while (lst != NULL)
+	{
+		new = ft_lstnew(f(lst->content));
+		if (new == NULL)
+		{
+			ft_lstclear(&newlist, del);
+			return (NULL);
+		}
+		ft_lstadd_back(&newlist, new);
+		lst = lst->next;
+	}
+	return (newlist);
+}

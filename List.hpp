@@ -9,9 +9,21 @@ namespace ft {
 template < class T, class Alloc = std::allocator<T> >
 class list {
 
+private:
+	struct		Node {
+        Node    *prev;
+        Node	*next;
+        T		*value; };
+
+		Alloc _allocator;
+		size_t _size;
+		Node *_head;
+
 public:
     class Iterator;
+	class CIterator;
     class RIterator;
+	class CRIterator;
 
     typedef T					value_type;
     typedef Alloc				allocator_type;
@@ -25,57 +37,110 @@ public:
     typedef RIterator           const_reverse_iterator;
     typedef ptrdiff_t			difference_type;
     typedef size_t				size_type;
-
-    struct      Node {
-        Node    *prev;
-        Node	*next;
-        T		value;
-    };
-	private:
-		Node *head;
+		
 	
 /************* 1. CONSTRUCTORS && DESTRUCTOR *************/
 
-    // explicit list (const allocator_type& alloc = allocator_type()) { }
+    explicit list (const allocator_type& alloc = allocator_type()) 
+	{
+		_allocator = alloc;
+		_size = 0;
+		_head = new Node;
+		_head->prev = _head;
+		_head->next = _head;
+		_head->value = NULL;
+	 }
 
-    // explicit list (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()); { }
+    explicit list (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
+	{
+		_allocator = alloc;
+		_head = new Node;
+		Node *tmp = _head;
+		for (size_type i = 0; i < n; i++)
+		{
+			tmp->next = new Node;
+			tmp->next->next = _head;
+			tmp->next->prev = tmp;
+			tmp->next->value = _allocator.allocate(1);
+			_allocator.construct(tmp->next->value, val);
+			tmp = tmp->next;
+		}
+		_head->prev = tmp;
+		_size = n;
+	}
 
-    // template <class InputIterator>
-    // list (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()); // range constructor, including first excluding last
+    template <class InputIterator>
+    list (InputIterator first, typename ft::EnableIf<!std::numeric_limits<InputIterator>::is_integer, 
+	InputIterator>::type last, const allocator_type& alloc = allocator_type())
+	{
+		_allocator = alloc;
+		_head = new Node;
+		Node *tmp = _head;
+		size_type n = 0;
+		for(InputIterator it = first; it != last; it++)
+			n++;
+		for(InputIterator it = first; it != last; it++)
+		{
+			tmp->next = new Node;
+			tmp->next->next = _head;
+			tmp->next->prev = tmp;
+			tmp->next->value = _allocator.allocate(1);
+			_allocator.construct(tmp->next->value, *it);
+			tmp = tmp->next;
+		}
+		_head->prev = tmp;
+		_size = n;
+	}
 
-    // list (const list& x) { *this = x; } // copy constructor
+    list (const list& x) 
+	{ 
+		_head = NULL; 
+		*this = x; 
+	}
+	/* need CLEAR and ASSIGN(range) */
+    // list& operator= (const list& x) 
+	// {
+	// 	// if (_head)
+	// 	// {
+	// 	// 	this->clear();
+	// 	// 	// deallocate cycle
+	// 	// }
+	// 	_size = x._size;
+	// 	this->assign(x.begin(), x.end()); // <-- allocate? 
+	// 	return *this;
+	// }
 
-    // ~list();  // destroy elements and deallocate capacity
-
-    // list& operator= (const list& x);
+	/* NEED CLEAR */
+	// ~list();  // destroy elements and deallocate capacity
 
 
 /************* 2. ITERATORS *************/
 
-    // iterator begin() {  }
-    // const_iterator begin() const {  } 
-    // iterator end()  {  }
-    // const_iterator end() const {  }
-    // reverse_iterator rbegin() {  }
-    // const_reverse_iterator rbegin() const {  }
-    // reverse_iterator rend() {  }
-    // const_reverse_iterator rend() const {  }
+    iterator begin() { return Iterator(_head->next); }
+    const_iterator begin() const { return CIterator(_head->next); } 
+    iterator end()  { return Iterator(_head); }
+    const_iterator end() const { return CIterator(_head); }
+    reverse_iterator rbegin() { return RIterator(_head->prev); }
+    const_reverse_iterator rbegin() const { return CRIterator(_head->prev); }
+    reverse_iterator rend() { return RIterator(_head); }
+    const_reverse_iterator rend() const { return CRIterator(_head); }
 
 
 
 /************* 3. CAPACITY *************/
 
-    // bool empty() const { return (_size == 0 ? 1 : 0); }
-    // size_type size() const { return _size; }
-    // size_type max_size() const{ return (std::numeric_limits<size_type>::max() / sizeof(value_type)); }
+    bool empty() const { return (_size == 0 ? 1 : 0); }
+    size_type size() const { return _size; }
+    size_type max_size() const{ return (std::numeric_limits<size_type>::max() / sizeof(value_type)); }
+	// size_type max_size() const{ return _allocator.max_size(); }
     
 
 /************* 4. ELEMENT ACCESS *************/
 
-    // reference front() { return _data[0]; }
-    // const_reference front() const { return _data[0]; }
-    // reference back() { return _data[_size - 1]; }
-    // const_reference back() const { return _data[_size - 1]; }
+    reference front() { return *(_head->next->value); }
+    const_reference front() const { return *(_head->next->value); }
+    reference back() { return *(_head->prev->value); }
+    const_reference back() const { return *(_head->prev->value); }
 
 
 /************* 5. MODIFIERS *************/
@@ -84,21 +149,162 @@ public:
     // void assign (InputIterator first, InputIterator last);	// replace content on range (destroy all old elements)
 
     // void assign (size_type n, const value_type& val); // replace content of n elements, each value is val
-    // void push_front (const value_type& val);
-    // void pop_front();
-	// void push_back (const value_type& val); // add new element at the end, increase container size by 1
-    // void pop_back(); // remove the last element, decrease size by 1
-    // iterator insert (iterator position, const value_type& val); // insert new element before position
-    // void insert (iterator position, size_type n, const value_type& val); // insert n elements before position
 
-    // template <class InputIterator>
-    // void insert (iterator position, InputIterator first, InputIterator last); // insert range elements before position
+    void push_front (const value_type& val)
+	{
+		Node *newnode = new Node;
+		newnode->value = _allocator.allocate(1);
+		_allocator.construct(newnode->value, val);
+		newnode->next = _head->next;
+		newnode->prev = _head;
+		newnode->next->prev = newnode;
+		_head->next = newnode;
+		_size++;
+	}
 
-    // iterator erase (iterator position); // remove element on position
-    // iterator erase (iterator first, iterator last); // remove range of elements
-    // void swap (list& x); // swap content
-    // void resize (size_type n, value_type val = value_type());
-    // void clear(); // removes all elements, leaving container size = 0
+    void pop_front()
+	{
+		Node *tmp = _head->next;
+		tmp->next->prev = _head;
+		_head->next = tmp->next;
+		_allocator.destroy(tmp->value);
+		_allocator.deallocate(tmp->value, 1);
+		delete tmp;
+		_size--;
+	}
+
+	void push_back (const value_type& val)
+	{
+		Node *newnode = new Node;
+		newnode->value = _allocator.allocate(1);
+		_allocator.construct(newnode->value, val);
+		newnode->next = _head;
+		newnode->prev = _head->prev;
+		newnode->prev->next = newnode;
+		_head->prev = newnode;
+		_size++;
+	}
+
+    void pop_back()
+	{
+		Node *tmp = _head->prev;
+		tmp->prev->next = _head;
+		_head->prev = tmp->prev;
+		_allocator.destroy(tmp->value);
+		_allocator.deallocate(tmp->value, 1);
+		delete tmp;
+		_size--;
+	}
+    iterator insert (iterator position, const value_type& val)
+	{
+		this->insert(position, 1, val);
+		return position;
+	}
+
+    void insert (iterator position, size_type n, const value_type& val)
+	{
+		Node *pos = _head->next;
+		for (Iterator it = this->begin(); it != position; it++)
+			pos = pos->next;
+		pos = pos->prev;
+		Node *tail = pos->next;
+		for (size_type i = 0; i < n; i++)
+		{
+			pos->next = new Node;
+			pos->next->value = _allocator.allocate(1);
+			_allocator.construct(pos->next->value, val);
+			pos->next->prev = pos;
+			pos = pos->next;
+			_size++;
+		}
+		pos->next = tail;
+		tail->prev = pos;
+	}
+
+    template <class InputIterator>
+    void insert (iterator position, InputIterator first, InputIterator last, 
+	typename ft::EnableIf<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type = 0)
+	{
+		Node *pos = _head->next;
+		for (Iterator it = this->begin(); it != position; it++)
+			pos = pos->next;
+		pos = pos->prev;
+		Node *tail = pos->next;
+		for(InputIterator it = first; it != last; it++)
+		{
+			pos->next = new Node;
+			pos->next->value = _allocator.allocate(1);
+			_allocator.construct(pos->next->value, *it);
+			pos->next->prev = pos;
+			pos = pos->next;
+			_size++;
+		}
+		pos->next = tail;
+		tail->prev = pos;
+	}
+
+    iterator erase (iterator position)
+	{
+		Node *pos = _head->next;
+		for (Iterator it = this->begin(); it != position; it++)
+			pos = pos->next;
+		position++;
+		pos->next->prev = pos->prev;
+		pos->prev->next = pos->next;
+		_allocator.destroy(pos->value);
+		_allocator.deallocate(pos->value, 1);
+		delete pos;
+		_size--;
+		return position;
+	}
+    iterator erase (iterator first, iterator last)
+	{
+		size_type n = 0;
+		Node *pos = _head->next;
+		for (Iterator it = this->begin(); it != first; it++)
+			pos = pos->next;
+		for(iterator it = first; it != last; it++)
+			n++;
+		Node *front = pos->prev;
+		for(size_type i = 0; i < n; i++)
+		{
+			Node *tmp = pos;
+			pos = pos->next;
+			_allocator.destroy(tmp->value);
+			_allocator.deallocate(tmp->value, 1);
+			delete tmp;
+			_size--;
+		}
+		front->next = pos;
+		pos->prev = front;
+		return last;
+	}
+    void swap (list& x)
+	{
+		list tmp = *this;
+		*this = x;
+		x = tmp;
+	}
+
+    // void resize (size_type n, value_type val = value_type())
+	// {
+
+	// }
+
+    void clear()
+	{
+		Node *tmp = _head->next;
+		while (tmp != _head)
+		{
+			_allocator.destroy(tmp->value);
+			_allocator.deallocate(tmp->value, 1);
+			tmp = tmp->next;
+			delete tmp->prev;
+			_size--;
+		}
+		_head->next =_head;
+		_head->prev = _head;
+	}
 
 // };
 
@@ -159,60 +365,79 @@ public:
 
 class Iterator {
 private:
-    T * _current;
+    Node * _current;
 public:
     Iterator() { _current = NULL; }
     Iterator(Iterator const &src) { *this = src; }
     Iterator &operator=(Iterator const &src) { this->_current = src._current; return *this; }
-    Iterator(T * const ptr) { _current = ptr; }
+    Iterator(Node * const ptr) { _current = ptr; }
     ~Iterator() {}
 
-    reference operator*() { return *_current; }
-    Iterator &operator++() { _current++; return *this; } // prefix
-    Iterator &operator--() { _current--; return *this; } // prefix
-    Iterator operator++(int) { Iterator tmp = *this; _current++; return tmp; } // postfix
-    Iterator operator--(int) { Iterator tmp = *this; _current--; return tmp; } // postfix
+    reference operator*() { return *(_current->value); }
+    Iterator &operator++() { _current = _current->next; return *this; } // prefix
+    Iterator &operator--() { _current = _current->prev; return *this; } // prefix
+    Iterator operator++(int) { Iterator tmp = *this; _current = _current->next; return tmp; } // postfix
+    Iterator operator--(int) { Iterator tmp = *this; _current = _current->prev; return tmp; } // postfix
     bool operator==(Iterator const &src) { return (this->_current == src._current); }
     bool operator!=(Iterator const &src) { return (this->_current != src._current); }
-    bool operator<=(Iterator const &src) { return (this->_current <= src._current); }
-    bool operator<(Iterator const &src) { return (this->_current < src._current); }
-    bool operator>=(Iterator const &src) { return (this->_current >= src._current); }
-    bool operator>(Iterator const &src) { return (this->_current > src._current); }
+};
 
-    Iterator &operator+(size_type n) { return (_current + n); }
-    Iterator &operator+=(size_type n) { return (_current + n); }
-    Iterator &operator-(size_type n) { return (_current - n); }
-    Iterator &operator-=(size_type n) { return (_current - n); }
+class CIterator {
+private:
+    Node * _current;
+public:
+    CIterator() { _current = NULL; }
+    CIterator(CIterator const &src) { *this = src; }
+    CIterator &operator=(CIterator const &src) { this->_current = src._current; return *this; }
+    CIterator(Node * const ptr) { _current = ptr; }
+    ~CIterator() {}
+
+    const_reference operator*() { return *(_current->value); }
+    CIterator &operator++() { _current = _current->next; return *this; } // prefix
+    CIterator &operator--() {  _current = _current->prev; return *this; } // prefix
+    CIterator operator++(int) { CIterator tmp = *this; _current = _current->next; return tmp; } // postfix
+    CIterator operator--(int) { CIterator tmp = *this; _current = _current->prev; return tmp; } // postfix
+    bool operator==(CIterator const &src) { return (this->_current == src._current); }
+    bool operator!=(CIterator const &src) { return (this->_current != src._current); }
 };
 
 class RIterator {
+private:
+	Node * _current;
 public:
-    T * _current;
     RIterator() { _current = NULL; }
     RIterator(RIterator const &src) { *this = src; }
     RIterator &operator=(RIterator const &src) { this->_current = src._current; return *this; }
-    RIterator(T * const ptr) { _current = ptr; }
+    RIterator(Node * const ptr) { _current = ptr; }
     ~RIterator() {}
 
-    reference operator*() { return *_current; }
-    RIterator &operator++() { _current--; return *this; } // prefix
-    RIterator &operator--() { _current++; return *this; } // prefix
-    RIterator operator++(int) { RIterator tmp = *this; _current--; return tmp; } // postfix
-    RIterator operator--(int) { RIterator tmp = *this; _current++; return tmp; } // postfix
+    reference operator*() { return *(_current->value); }
+    RIterator &operator++() {  _current = _current->prev; return *this; } // prefix
+    RIterator &operator--() {  _current = _current->next; return *this; } // prefix
+    RIterator operator++(int) { RIterator tmp = *this; _current = _current->prev; return tmp; } // postfix
+    RIterator operator--(int) { RIterator tmp = *this; _current = _current->next; return tmp; } // postfix
     bool operator==(RIterator const &src) { return (this->_current == src._current); }
     bool operator!=(RIterator const &src) { return (this->_current != src._current); }
-    bool operator<=(RIterator const &src) { return (this->_current <= src._current); }
-    bool operator<(RIterator const &src) { return (this->_current < src._current); }
-    bool operator>=(RIterator const &src) { return (this->_current >= src._current); }
-    bool operator>(RIterator const &src) { return (this->_current > src._current); }
-
-    RIterator &operator+(size_type n) { return (_current - n); }
-    RIterator &operator+=(size_type n) { return (_current - n); }
-    RIterator &operator-(size_type n) { return (_current + n); }
-    RIterator &operator-=(size_type n) { return (_current + n); }
 };
 
+class CRIterator {
+private:
+    Node * _current;
+public:
+    CRIterator() { _current = NULL; }
+    CRIterator(CRIterator const &src) { *this = src; }
+    CRIterator &operator=(CRIterator const &src) { this->_current = src._current; return *this; }
+    CRIterator(Node * const ptr) { _current = ptr; }
+    ~CRIterator() {}
 
+    const_reference operator*() { return *(_current->value); }
+    CRIterator &operator++() {  _current = _current->prev; return *this; } // prefix
+    CRIterator &operator--() {  _current = _current->next; return *this; } // prefix
+    CRIterator operator++(int) { CRIterator tmp = *this; _current = _current->prev; return tmp; } // postfix
+    CRIterator operator--(int) { CRIterator tmp = *this; _current = _current->next; return tmp; } // postfix
+    bool operator==(CRIterator const &src) { return (this->_current == src._current); }
+    bool operator!=(CRIterator const &src) { return (this->_current != src._current); }
+};
 
 }; // class bracket
 } // namespace bracket

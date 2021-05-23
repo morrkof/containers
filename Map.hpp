@@ -3,29 +3,31 @@
 
 #include <memory>
 #include <limits>
+#include <functional> // less
+#include <utility> // pair
 
 namespace ft {
 
-template < class Key, class T, class Compare = less<Key>, class Alloc = std::allocator<pair<const Key,T> >
-class list {
+template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<std::pair<const Key,T> >
+class Map {
 private:
 
 public:
     class Iterator;
     class RIterator;
 
-    typedef T					value_type;
-    typedef Alloc				allocator_type;
-    typedef value_type&			reference;
-    typedef const value_type&	const_reference;
-	typedef  value_type*		pointer;
-    typedef const value_type*	const_pointer;
-    typedef Iterator            iterator;
-    typedef Iterator            const_iterator;
-    typedef RIterator           reverse_iterator;
-    typedef RIterator           const_reverse_iterator;
-    typedef ptrdiff_t			difference_type;
-    typedef size_t				size_type;
+    // typedef T					value_type;
+    // typedef Alloc				allocator_type;
+    // typedef value_type&			reference;
+    // typedef const value_type&	const_reference;
+	// typedef  value_type*		pointer;
+    // typedef const value_type*	const_pointer;
+    // typedef Iterator            iterator;
+    // typedef Iterator            const_iterator;
+    // typedef RIterator           reverse_iterator;
+    // typedef RIterator           const_reverse_iterator;
+    // typedef ptrdiff_t			difference_type;
+    // typedef size_t				size_type;
 
 /************* 1. CONSTRUCTORS && DESTRUCTOR *************/
 

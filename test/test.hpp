@@ -2,10 +2,18 @@
 #define TESTHPP
 
 #include <vector>
+#include <list>
+#include <map>
+#include <stack>
+#include <queue>
 #include <string>
 #include <iostream>
 #include <iomanip>
 #include "../Vector.hpp"
+#include "../List.hpp"
+// #include "../Map.hpp"
+// #include "../Stack.hpp"
+// #include "../Queue.hpp"
 
 class Awesome {
 public:
@@ -24,5 +32,6 @@ private:
 std::ostream &operator<<(std::ostream &os, Awesome const &i);
 void print_beautiful_title(std::string str);
 void test_vector(void);
+void test_list(void);
 
 #endif

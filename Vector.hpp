@@ -255,10 +255,17 @@ public:
 		iterator result = position;
 		if((_size + 1) <= _capacity)
 		{
-			for (Iterator it = Iterator(_data + _size); it != position - 1; it--)
+			if (_size)
 			{
-				_allocator.construct(&(*it), *(it - 1));
-				_allocator.destroy(&(*(it - 1)));
+				Iterator it = this->end() - 1;
+				Iterator it_end = Iterator(_data + _size);
+				while(it != (position - 1))
+				{
+					_allocator.construct(&(*it_end), *it);
+				 	_allocator.destroy(&(*it));
+					 it--;
+					 it_end--;
+				}
 			}
 			_allocator.construct(&(*position), val);
 			_size++;
@@ -297,10 +304,17 @@ public:
 	{
 		if((_size + n) <= _capacity)
 		{
-			for (Iterator it = Iterator(_data + _size + n); it != position - 1; it--)
+			if (_size)
 			{
-				_allocator.construct(&(*it), *(it - n));
-				_allocator.destroy(&(*(it - n)));
+				Iterator it = this->end() - 1;
+				Iterator it_end = Iterator(_data + _size + n - 1);
+				while (it != (position - 1))
+				{
+					_allocator.construct(&(*it_end), *it);
+				 	_allocator.destroy(&(*it));
+					 it--;
+					 it_end--;
+				}
 			}
 			for (size_type i = 0; i < n; i++ )
 			{
@@ -363,11 +377,6 @@ public:
 					 it--;
 					 it_end--;
 				}
-				// for (Iterator it = Iterator(_data + _size + len - 1); it != position - 1; it--)
-				// {
-				// 	_allocator.construct(&(*it), *(it - len));
-				// 	_allocator.destroy(&(*(it - len)));
-				// }
 			}
 			for (InputIterator it = first; it != last; it++)
 			{
@@ -435,7 +444,7 @@ public:
 			tmp++;
 		}
 		_size -= len;
-		return first;
+		return last;
 	}
 
     void swap (vector& x)
