@@ -110,7 +110,6 @@ public:
 	// 	return *this;
 	// }
 
-	/* NEED CLEAR */
 	~list()
 	{
 		this->clear();
@@ -310,9 +309,6 @@ public:
 		_head->prev = _head;
 	}
 
-// };
-
-
 /************* 6. OPERATIONS *************/
 
     // void splice (iterator position, list& x); // transfer elements from list to list
@@ -340,31 +336,6 @@ public:
     // void sort (Compare comp);
 
     // void reverse();
-
-
-
-/************* 7. NON-MEMBER OVERLOADS *************/
-
-// template <class T, class Alloc>
-//   bool operator== (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs); // comparing sizes, if match - comparing elements
-
-// template <class T, class Alloc>
-//   bool operator!= (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs);
-
-// template <class T, class Alloc>
-//   bool operator<  (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs); // lexicographical_compare 
-
-// template <class T, class Alloc>
-//   bool operator<= (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs);
-
-// template <class T, class Alloc>
-//   bool operator>  (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs);
-
-// template <class T, class Alloc>
-//   bool operator>= (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs);
-
-// template <class T, class Alloc>
-//   void swap (list<T,Alloc>& x, list<T,Alloc>& y); // containers exchange references to their data, without copy or move elements
 
 
 class Iterator {
@@ -444,6 +415,31 @@ public:
 };
 
 }; // class bracket
+
+
+/************* 7. NON-MEMBER OVERLOADS *************/
+
+// template <class T, class Alloc>
+//   bool operator== (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs); // comparing sizes, if match - comparing elements
+
+// template <class T, class Alloc>
+//   bool operator!= (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs);
+
+// template <class T, class Alloc>
+//   bool operator<  (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs); // lexicographical_compare 
+
+// template <class T, class Alloc>
+//   bool operator<= (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs);
+
+// template <class T, class Alloc>
+//   bool operator>  (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs);
+
+// template <class T, class Alloc>
+//   bool operator>= (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs);
+
+// template <class T, class Alloc>
+//   void swap (list<T,Alloc>& x, list<T,Alloc>& y); // containers exchange references to their data, without copy or move elements
+
 } // namespace bracket
 
 #endif

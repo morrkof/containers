@@ -28,7 +28,7 @@ void print_beautiful_title(std::string str)
 int main()
 {
 	test_vector();
-	test_list();
+	// test_list();
 	// test_map();
 	// test_stack();
 	// test_queue();

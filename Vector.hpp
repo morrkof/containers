@@ -112,7 +112,6 @@ public:
 		_allocator.deallocate(_data, _capacity);
 	}
 
-
 /************* 2. ITERATORS *************/
 
     iterator begin() { return Iterator(_data); }
@@ -123,8 +122,6 @@ public:
     const_reverse_iterator rbegin() const { return CRIterator(_data + _size - 1); }
     reverse_iterator rend() { return RIterator(_data - 1); }
     const_reverse_iterator rend() const { return CRIterator(_data - 1); }
-
-
 
 /************* 3. CAPACITY *************/
 
@@ -145,7 +142,10 @@ public:
 					this->push_back(val);
 			else
 			{
-				this->reserve(n);
+				if ((n - _capacity) > _capacity)
+					this->reserve(n);
+				else
+					this->reserve(_capacity * 2);
 				for(size_type i = _size; i != n; i++)
 				{
 					_allocator.construct(_data + i, val);
@@ -173,7 +173,6 @@ public:
 		}
 	}
 
-
 /************* 4. ELEMENT ACCESS *************/
 
     reference operator[] (size_type n) { return _data[n]; }
@@ -181,7 +180,7 @@ public:
     reference at (size_type n)
 	{
 		if(n < 0 || n > _size)
-			throw std::out_of_range("!!! OUT OF RANGE !!!");
+			throw std::out_of_range("!!! VECTOR OUT OF RANGE !!!");
 		else
 			return _data[n];
 	}
@@ -190,10 +189,6 @@ public:
     const_reference front() const { return _data[0]; }
     reference back() { return _data[_size - 1]; }
     const_reference back() const { return _data[_size - 1]; }
-
-
-
-
 
 /************* 5. MODIFIERS *************/
 
@@ -354,8 +349,6 @@ public:
 				this->push_back(val);
 	}
 
-//  if n > capacity then capacity + n (or size + n?)
-// if n < capacity then capacity * 2
     template <class InputIterator>
     void insert (iterator position, InputIterator first, InputIterator last, 
 	typename ft::EnableIf<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type = 0)

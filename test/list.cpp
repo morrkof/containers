@@ -93,14 +93,14 @@ void test_list()
         v.push_back(42);
 		ft_v.push_back(42);
     }
-	// std::cout << "Decreasing..." << std::endl;
-	// for(int i = 0; i != 5; i++)
-    // {
-	// 	v.pop_back();
-    //     ft_v.pop_back();
-    //     std::cout << "std | sz: "  <<  std::setfill(' ') << std::setw(3) << v.size() 
-	// 	<< "    ft  | sz: " <<  std::setfill(' ') << std::setw(3) << ft_v.size() << std::endl;
-    // }
+	std::cout << "Decreasing..." << std::endl;
+	for(int i = 0; i != 5; i++)
+    {
+		v.pop_back();
+        ft_v.pop_back();
+        std::cout << "std | sz: "  <<  std::setfill(' ') << std::setw(3) << v.size() 
+		<< "    ft  | sz: " <<  std::setfill(' ') << std::setw(3) << ft_v.size() << std::endl;
+    }
 
 	
     std::cout << std::endl << "............. MAX SIZE:" << std::endl;

@@ -22,6 +22,12 @@ std::ostream &operator<<(std::ostream &os, std::vector<T> &src)
 
 void test_vector()
 {
+	std::cout << "\e[1;32m";
+	std::cout << "*****************" << std::endl;
+	std::cout << "*  🍀 VECTOR 🍀  *" << std::endl;
+	std::cout << "*****************" << std::endl;
+	std::cout << "\e[0m";
+
     print_beautiful_title("1. TESTING CONSTRUCTORS:");
 	std::vector<std::string> v_empty;
 	ft::vector<std::string> ft_empty;
@@ -79,7 +85,7 @@ void test_vector()
     std::vector<int> v;
 	ft::vector<int> ft_v;
     std::cout << "Increasing..." << std::endl;
-    for(int i = 0; i != 18; i++)
+    for(int i = 0; i != 10; i++)
     {
         std::cout << "std | sz: "  <<  std::setfill(' ') << std::setw(3) << v.size() 
 		<< " cpct: " <<  std::setfill(' ') << std::setw(3)  << v.capacity() 
