@@ -111,7 +111,11 @@ public:
 	// }
 
 	/* NEED CLEAR */
-	// ~list();  // destroy elements and deallocate capacity
+	~list()
+	{
+		this->clear();
+		delete _head;
+	}
 
 
 /************* 2. ITERATORS *************/
