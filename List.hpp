@@ -148,10 +148,19 @@ public:
 
 /************* 5. MODIFIERS *************/
 
-    // template <class InputIterator>
-    // void assign (InputIterator first, InputIterator last);	// replace content on range (destroy all old elements)
+    template <class InputIterator>
+    void assign (InputIterator first, InputIterator last, 
+	typename ft::EnableIf<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type = 0)
+	{
+		this->clear();
+		this->insert(this->begin(), first, last);
+	}
 
-    // void assign (size_type n, const value_type& val); // replace content of n elements, each value is val
+    void assign (size_type n, const value_type& val)
+	{
+		this->clear();
+		this->insert(this->begin(), n, val);
+	}
 
     void push_front (const value_type& val)
 	{

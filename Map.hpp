@@ -11,38 +11,53 @@ namespace ft {
 template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<std::pair<const Key,T> >
 class Map {
 private:
+    struct		Node {
+        bool    red;
+        Node    *parent;
+        Node	*left;
+        Node	*right;
+        std::pair<const Key, T> pair; };
 
+		Alloc _allocator;
+		size_t _size;
+		Node *_head;
 public:
     class Iterator;
+    class CIterator;
     class RIterator;
+    class CRIterator;
 
-    // typedef T					value_type;
-    // typedef Alloc				allocator_type;
-    // typedef value_type&			reference;
-    // typedef const value_type&	const_reference;
-	// typedef  value_type*		pointer;
-    // typedef const value_type*	const_pointer;
-    // typedef Iterator            iterator;
-    // typedef Iterator            const_iterator;
-    // typedef RIterator           reverse_iterator;
-    // typedef RIterator           const_reverse_iterator;
-    // typedef ptrdiff_t			difference_type;
-    // typedef size_t				size_type;
+    typedef Key                             key_type;
+    typedef T                               mapped_type;
+    typedef pair<const Key, T>              value_type;
+    typedef Compare                         key_compare;
+    typedef ?                               value_compare;
+    typedef Alloc                           allocator_type;
+    typedef allocator_type::reference       reference;
+    typedef allocator_type::const_reference const_reference;
+	typedef allocator_type::pointer         pointer;
+    typedef allocator_type::const_pointer   const_pointer;
+    typedef Iterator                        iterator;
+    typedef Iterator                        const_iterator;
+    typedef RIterator                       reverse_iterator;
+    typedef RIterator                       const_reverse_iterator;
+    typedef ptrdiff_t                       difference_type;
+    typedef size_t                          size_type;
 
 /************* 1. CONSTRUCTORS && DESTRUCTOR *************/
 
-    // explicit list (const allocator_type& alloc = allocator_type()) { }
-
-    // explicit list (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()); { }
+    // explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());
 
     // template <class InputIterator>
-    // list (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()); // range constructor, including first excluding last
+    // map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());
 
-    // list (const list& x) { *this = x; } // copy constructor
+    // map (const map& x) { *this = x; }
 
-    // ~list();  // destroy elements and deallocate capacity
+    // map& operator= (const map& x);
 
-    // list& operator= (const list& x);
+    // ~map();  // destructor
+
+
 
 
 /************* 2. ITERATORS *************/
@@ -66,37 +81,38 @@ public:
     
 
 /************* 4. ELEMENT ACCESS *************/
-
-    // reference front() { return _data[0]; }
-    // const_reference front() const { return _data[0]; }
-    // reference back() { return _data[_size - 1]; }
-    // const_reference back() const { return _data[_size - 1]; }
+/* ищет по k и возвращает референс на связанное с этим k значение
+** если не находит, то добавляет новый элемент с таким ключом и дефолтным значением и возвращает его
+** в случае неудачи увеличивает размер на 1 */
+// mapped_type& operator[] (const key_type& k);
 
 
 /************* 5. MODIFIERS *************/
+    // insert single element если такой ключ уже есть, то не вставляется а возвращается итератор на существующий
+    // элемент
+    // pair<iterator,bool> insert (const value_type& val);
+    // insert with hint позиция должна указывать на элемент предшествующий месту вставки, это просто подсказка для ускорения
+    // iterator insert (iterator position, const value_type& val);
+    // range insert
+    // template <class InputIterator> 
+    // void insert (InputIterator first, InputIterator last);
 
-    // template <class InputIterator>
-    // void assign (InputIterator first, InputIterator last);	// replace content on range (destroy all old elements)
-    // void assign (size_type n, const value_type& val); // replace content of n elements, each value is val
+    //  удаляет либо на позиции, либо по ключу, либо диапазон
+    // void erase (iterator position);
+    // size_type erase (const key_type& k);
+    // void erase (iterator first, iterator last);
 
-    // void push_front (const value_type& val);
-    // void pop_front();
-	// void push_back (const value_type& val); // add new element at the end, increase container size by 1
-    // void pop_back(); // remove the last element, decrease size by 1
-    // iterator insert (iterator position, const value_type& val); // insert new element before position
-    // void insert (iterator position, size_type n, const value_type& val); // insert n elements before position
-    // template <class InputIterator>
-    // void insert (iterator position, InputIterator first, InputIterator last); // insert range elements before position
-    // iterator erase (iterator position); // remove element on position
-    // iterator erase (iterator first, iterator last); // remove range of elements
-    // void swap (list& x); // swap content
-    // void resize (size_type n, value_type val = value_type());
+    // void swap (map& x);
     // void clear(); // removes all elements, leaving container size = 0
 
 // };
 
+/************* 6. OBSERVERS *************/
 
-/************* 6. OPERATIONS *************/
+// key_compare key_comp() const;
+// value_compare value_comp() const;
+
+/************* 7. OPERATIONS *************/
 
     // void splice (iterator position, list& x); // transfer elements from list to list
     // void splice (iterator position, list& x, iterator i);
@@ -148,57 +164,78 @@ public:
 
 class Iterator {
 private:
-    T * _current;
+    Node * _current;
 public:
     Iterator() { _current = NULL; }
     Iterator(Iterator const &src) { *this = src; }
     Iterator &operator=(Iterator const &src) { this->_current = src._current; return *this; }
-    Iterator(T * const ptr) { _current = ptr; }
+    Iterator(Node * const ptr) { _current = ptr; }
     ~Iterator() {}
 
-    reference operator*() { return *_current; }
-    Iterator &operator++() { _current++; return *this; } // prefix
-    Iterator &operator--() { _current--; return *this; } // prefix
-    Iterator operator++(int) { Iterator tmp = *this; _current++; return tmp; } // postfix
-    Iterator operator--(int) { Iterator tmp = *this; _current--; return tmp; } // postfix
+    reference operator*() { return *(_current->value); }
+    Iterator &operator++() { _current = _current->next; return *this; } // prefix
+    Iterator &operator--() { _current = _current->prev; return *this; } // prefix
+    Iterator operator++(int) { Iterator tmp = *this; _current = _current->next; return tmp; } // postfix
+    Iterator operator--(int) { Iterator tmp = *this; _current = _current->prev; return tmp; } // postfix
     bool operator==(Iterator const &src) { return (this->_current == src._current); }
     bool operator!=(Iterator const &src) { return (this->_current != src._current); }
-    bool operator<=(Iterator const &src) { return (this->_current <= src._current); }
-    bool operator<(Iterator const &src) { return (this->_current < src._current); }
-    bool operator>=(Iterator const &src) { return (this->_current >= src._current); }
-    bool operator>(Iterator const &src) { return (this->_current > src._current); }
+};
 
-    Iterator &operator+(size_type n) { return (_current + n); }
-    Iterator &operator+=(size_type n) { return (_current + n); }
-    Iterator &operator-(size_type n) { return (_current - n); }
-    Iterator &operator-=(size_type n) { return (_current - n); }
+class CIterator {
+private:
+    Node * _current;
+public:
+    CIterator() { _current = NULL; }
+    CIterator(CIterator const &src) { *this = src; }
+    CIterator &operator=(CIterator const &src) { this->_current = src._current; return *this; }
+    CIterator(Node * const ptr) { _current = ptr; }
+    ~CIterator() {}
+
+    const_reference operator*() { return *(_current->value); }
+    CIterator &operator++() { _current = _current->next; return *this; } // prefix
+    CIterator &operator--() {  _current = _current->prev; return *this; } // prefix
+    CIterator operator++(int) { CIterator tmp = *this; _current = _current->next; return tmp; } // postfix
+    CIterator operator--(int) { CIterator tmp = *this; _current = _current->prev; return tmp; } // postfix
+    bool operator==(CIterator const &src) { return (this->_current == src._current); }
+    bool operator!=(CIterator const &src) { return (this->_current != src._current); }
 };
 
 class RIterator {
+private:
+	Node * _current;
 public:
-    T * _current;
     RIterator() { _current = NULL; }
     RIterator(RIterator const &src) { *this = src; }
     RIterator &operator=(RIterator const &src) { this->_current = src._current; return *this; }
-    RIterator(T * const ptr) { _current = ptr; }
+    RIterator(Node * const ptr) { _current = ptr; }
     ~RIterator() {}
 
-    reference operator*() { return *_current; }
-    RIterator &operator++() { _current--; return *this; } // prefix
-    RIterator &operator--() { _current++; return *this; } // prefix
-    RIterator operator++(int) { RIterator tmp = *this; _current--; return tmp; } // postfix
-    RIterator operator--(int) { RIterator tmp = *this; _current++; return tmp; } // postfix
+    reference operator*() { return *(_current->value); }
+    RIterator &operator++() {  _current = _current->prev; return *this; } // prefix
+    RIterator &operator--() {  _current = _current->next; return *this; } // prefix
+    RIterator operator++(int) { RIterator tmp = *this; _current = _current->prev; return tmp; } // postfix
+    RIterator operator--(int) { RIterator tmp = *this; _current = _current->next; return tmp; } // postfix
     bool operator==(RIterator const &src) { return (this->_current == src._current); }
     bool operator!=(RIterator const &src) { return (this->_current != src._current); }
-    bool operator<=(RIterator const &src) { return (this->_current <= src._current); }
-    bool operator<(RIterator const &src) { return (this->_current < src._current); }
-    bool operator>=(RIterator const &src) { return (this->_current >= src._current); }
-    bool operator>(RIterator const &src) { return (this->_current > src._current); }
+};
 
-    RIterator &operator+(size_type n) { return (_current - n); }
-    RIterator &operator+=(size_type n) { return (_current - n); }
-    RIterator &operator-(size_type n) { return (_current + n); }
-    RIterator &operator-=(size_type n) { return (_current + n); }
+class CRIterator {
+private:
+    Node * _current;
+public:
+    CRIterator() { _current = NULL; }
+    CRIterator(CRIterator const &src) { *this = src; }
+    CRIterator &operator=(CRIterator const &src) { this->_current = src._current; return *this; }
+    CRIterator(Node * const ptr) { _current = ptr; }
+    ~CRIterator() {}
+
+    const_reference operator*() { return *(_current->value); }
+    CRIterator &operator++() {  _current = _current->prev; return *this; } // prefix
+    CRIterator &operator--() {  _current = _current->next; return *this; } // prefix
+    CRIterator operator++(int) { CRIterator tmp = *this; _current = _current->prev; return tmp; } // postfix
+    CRIterator operator--(int) { CRIterator tmp = *this; _current = _current->next; return tmp; } // postfix
+    bool operator==(CRIterator const &src) { return (this->_current == src._current); }
+    bool operator!=(CRIterator const &src) { return (this->_current != src._current); }
 };
 
 

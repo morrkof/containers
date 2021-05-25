@@ -192,6 +192,7 @@ public:
 
 /************* 5. MODIFIERS *************/
 
+/* Assign vector content (range version) */
     template <class InputIterator>
     void assign (InputIterator first, InputIterator last, 
 	typename ft::EnableIf<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type = 0)
@@ -200,12 +201,14 @@ public:
 		this->insert(this->begin(), first, last);
 	}
 
+/* Assign vector content (fill version) */
     void assign (size_type n, const value_type& val)
 	{
 		this->clear();
 		this->insert(this->begin(), n, val);
 	}
 
+/* Add element at the end */
 	void push_back (const value_type& val)
     {
     	if (_size < _capacity)
@@ -239,12 +242,14 @@ public:
 		}
     }
 
+/* Delete last element */
     void pop_back()
 	{
 		_allocator.destroy(&(this->back()));
 		_size--;
 	}
 
+/* Insert elements (single) */
     iterator insert (iterator position, const value_type& val)
 	{
 		iterator result = position;
@@ -295,6 +300,7 @@ public:
 		return result;
 	}
 
+/* Insert elements (fill) */
     void insert (iterator position, size_type n, const value_type& val)
 	{
 		if((_size + n) <= _capacity)
@@ -320,7 +326,11 @@ public:
 		}
 		else if ((_size + n) > _capacity && _capacity)
 		{
-			T *newdata = _allocator.allocate(_size + n);
+			T *newdata = NULL;
+			if (n < _capacity)
+				newdata = _allocator.allocate(_capacity * 2);
+			else
+				newdata = _allocator.allocate(_size + n);
 			T *tmp = newdata;
 			for (Iterator it = this->begin(); it != position; it++)
 			{
@@ -342,13 +352,17 @@ public:
 			_allocator.deallocate(_data, _capacity);
 			_data = newdata;
 			_size = _size + n;
-			_capacity = _size;
+			if (n < _capacity)
+				_capacity *= 2;
+			else
+				_capacity = _size;
 		}
 		else if (!_capacity)
 			for (size_type i = 0; i < n; i++)
 				this->push_back(val);
 	}
 
+/* Insert elements (range) */
     template <class InputIterator>
     void insert (iterator position, InputIterator first, InputIterator last, 
 	typename ft::EnableIf<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type = 0)
@@ -409,6 +423,7 @@ public:
 				this->push_back(*it);
 	}
 
+/* Erase elements (single) */
     iterator erase (iterator position)
 	{
 		_allocator.destroy(&(*position));
@@ -421,6 +436,7 @@ public:
 		return position;
 	}
 
+/* Erase elements (range) */
     iterator erase (iterator first, iterator last)
 	{
 		size_type len = 0;
@@ -440,6 +456,7 @@ public:
 		return last;
 	}
 
+/* Swap content */
     void swap (vector& x)
 	{
 		vector tmp = *this;
@@ -447,6 +464,7 @@ public:
 		x = tmp;
 	}
 
+/* Clear content */
     void clear()
 	{
 		pointer tmp = _data;

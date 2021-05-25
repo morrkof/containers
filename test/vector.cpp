@@ -52,24 +52,24 @@ void test_vector()
     print_beautiful_title("2. TESTING ITERATORS:");
     std::vector<int> v_iter;
 	ft::vector<int> ft_iter;
-    for(int i = 12; i < 20; i++)
+    for (int i = 12; i < 20; i++)
     {
         v_iter.push_back(i);
 		ft_iter.push_back(i);
     }
 
     std::cout << "std | Iterating...  ";
-    for(std::vector<int>::iterator it = v_iter.begin(); it != v_iter.end(); it++)
+    for (std::vector<int>::iterator it = v_iter.begin(); it != v_iter.end(); it++)
         std::cout << *it << "  ";
     std::cout << std::endl;
 
     std::cout << "ft  | Iterating...  ";
-    for(ft::vector<int>::iterator it = ft_iter.begin(); it != ft_iter.end(); it++)
+    for (ft::vector<int>::iterator it = ft_iter.begin(); it != ft_iter.end(); it++)
         std::cout << *it << "  ";
     std::cout << std::endl;
 	
 	std::cout << "std | Reverse iterating...  ";
-    for(std::vector<int>::reverse_iterator it = v_iter.rbegin(); it != v_iter.rend(); it++)
+    for (std::vector<int>::reverse_iterator it = v_iter.rbegin(); it != v_iter.rend(); it++)
         std::cout << *it << "  ";
     std::cout << std::endl;
 
@@ -233,98 +233,61 @@ void test_vector()
 	std::cout << std::endl << "............. ERASE SINGLE ELEMENT:" << std::endl;
 	{
 	std::vector<int> v_erase;
-	for(size_t i = 1; i < 10; i++)
-		v_erase.push_back(i);
-	std::cout << "std | create this:  " << v_erase;
-	v_erase.erase(v_erase.begin());
-	std::cout << "std | erase first:  " << v_erase;
-	v_erase.erase(v_erase.begin() + 5);
-	std::cout << "std | erase 7:  " << v_erase;
-	}
-	{
 	ft::vector<int> ft_erase;
 	for(size_t i = 1; i < 10; i++)
+	{
+		v_erase.push_back(i);
 		ft_erase.push_back(i);
-	std::cout << "ft  | create this:  " << ft_erase;
-	ft_erase.erase(ft_erase.begin());
-	std::cout << "ft  | erase first:  " << ft_erase;
-	ft_erase.erase(ft_erase.begin() + 5);
-	std::cout << "ft  | erase 7:  " << ft_erase;
 	}
-
+	std::cout << "creating:  " << std::endl << v_erase << ft_erase;
+	v_erase.erase(v_erase.begin());
+	ft_erase.erase(ft_erase.begin());
+	std::cout << "erase first element:  " << std::endl << v_erase << ft_erase;
+	v_erase.erase(v_erase.begin() + 5);
+	ft_erase.erase(ft_erase.begin() + 5);
+	std::cout << "erase '7':  " << std::endl << v_erase << ft_erase;
+	}
+	
 	std::cout << std::endl << "............. ERASE MULTIPLY ELEMENTS:" << std::endl;
 	{
 	std::vector<int> v_erase;
-	for(size_t i = 1; i < 10; i++)
-		v_erase.push_back(i);
-	std::cout << "std | create this:  " << v_erase;
-	v_erase.erase(v_erase.begin(), v_erase.begin() + 3);
-	std::cout << "std | erase first:  " << v_erase;
-	}
-	{
 	ft::vector<int> ft_erase;
 	for(size_t i = 1; i < 10; i++)
+	{
+		v_erase.push_back(i);
 		ft_erase.push_back(i);
-	std::cout << "ft  | create this:  " << ft_erase;
+	}
+	std::cout << "creating:  " << std::endl << v_erase << ft_erase;
+	v_erase.erase(v_erase.begin(), v_erase.begin() + 3);
 	ft_erase.erase(ft_erase.begin(), ft_erase.begin() + 3);
-	std::cout << "ft  | erase first:  " << ft_erase;
+	std::cout << "erased range:  " << std::endl << v_erase << ft_erase;
 	}
-
-
+	
 	std::cout << std::endl << "............. ASSIGN:" << std::endl;
-
+	std::vector<int> v_assign;
+	ft::vector<int> ft_assign;
+	for(size_t i = 0; i < 20; i++)
 	{
-		std::vector<int> v_assign;
-		for(size_t i = 0; i < 20; i++)
-			v_assign.push_back(i);
-		std::cout << "std | create this: " << v_assign;
-		v_assign.assign(5, 42);
-		std::cout << "std | after assign 5/42: " << v_assign;
+		v_assign.push_back(i);
+		ft_assign.push_back(i);
 	}
+	std::cout << "creating: " << std::endl << v_assign << ft_assign;
+	v_assign.assign(5, 42);
+	ft_assign.assign(5, 42);
+	std::cout << "after assign 5/42: " << std::endl << v_assign << ft_assign;
 
-	{
-		ft::vector<int> ft_assign;
-		for(size_t i = 0; i < 20; i++)
-			ft_assign.push_back(i);
-		std::cout << "ft  | create this: " << ft_assign;
-		ft_assign.assign(5, 42);
-		std::cout << "ft  | after assign 5/42: " << ft_assign;
-	}
-
-
-
-
-	std::cout << "IF CAPACITY = 0 ???" << std::endl;
-	std::vector<int> v_test;
-	std::cout << "created : " << v_test;
-	v_test.insert(v_test.begin(), 678);
-	std::cout << "now1 : " << v_test;
-	v_test.insert(v_test.begin(), 123);
-	std::cout << "now2 : " << v_test;
-	v_test.insert(v_test.begin(), 45);
-	std::cout << "now3 : " << v_test;
-
-
-
-
-
-	std::cout << std::endl << "CLEAR:" << std::endl;
-	v_push.clear();
-	ft_push.clear();
-	std::cout << "std | after clear: " << v_push;
-	std::cout << "ft  | after clear: " << ft_push;
-
-
+	std::cout << std::endl << "............. CLEAR:" << std::endl;
+	v_assign.clear();
+	ft_assign.clear();
+	std::cout << "after clear: " << std::endl << v_assign << ft_assign;
 
 	std::cout << std::endl << "............. SWAP:" << std::endl;
-
 	std::cout << "before swap:" << std::endl <<  "1st - " << v_zero << "2nd - " << v_full
 	<<  "1st - " << ft_zero << "2nd - " << ft_full << std::endl ;
 	v_zero.swap(v_full);
 	ft_zero.swap(ft_full);
 	std::cout << "after swap (method):" << std::endl <<  "1st - " << v_zero << "2nd - " << v_full
 	<<  "1st - " << ft_zero << "2nd - " << ft_full << std::endl ;
-
 	std::swap(v_zero, v_full);
 	ft::swap(ft_zero, ft_full);
 	std::cout << "after swap (non-member):" << std::endl <<  "1st - " << ft_zero << "2nd - " << ft_full
@@ -354,7 +317,7 @@ void test_vector()
 	v_str.insert(v_str.begin(), "lol");
 	ft_str.push_back("cheburek");
 	ft_str.insert(ft_str.begin(), "lol");
-	std::cout << v_str << ft_str;
+	std::cout << "after push_back and insert..." << std::endl<< v_str << ft_str;
 
 	std::cout << std::endl << "............. VECTOR OF AWESOMENESS:" << std::endl;
 	std::vector<Awesome> v_awesome(1, 13);
@@ -362,7 +325,9 @@ void test_vector()
 
 	v_awesome.push_back(133);
 	ft_awesome.push_back(133);
-
-	std::cout << "std | " << v_awesome[0].getN() << " " << v_awesome[1].getN() << std::endl;
-	std::cout << "ft  | " << ft_awesome[0].getN() << " " << ft_awesome[1].getN() << std::endl;
+	v_awesome.insert(v_awesome.begin(), 44);
+	ft_awesome.insert(ft_awesome.begin(), 44);
+	std::cout << v_awesome << ft_awesome;
+	// std::cout << "std | " << v_awesome[0].getN() << " " << v_awesome[1].getN() << std::endl;
+	// std::cout << "ft  | " << ft_awesome[0].getN() << " " << ft_awesome[1].getN() << std::endl;
 }
