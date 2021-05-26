@@ -319,31 +319,51 @@ public:
 	}
 
 /************* 6. OPERATIONS *************/
-
+// переносит элемент из х в наш контейнер на позицию, без конструкторов, тупо перенос, размер
+// меняется у всех контейнеров. 1- переносит все, 2- переносит один, 3- переносит диапазон
+// непонятно как менять размер у второго контейнера!!!1
     // void splice (iterator position, list& x); // transfer elements from list to list
     // void splice (iterator position, list& x, iterator i);
     // void splice (iterator position, list& x, iterator first, iterator last);
 
+// удаляет всё где валью = вал, вызывает деструктор и уменьшает размер
     // void remove (const value_type& val); // remove elements with specific value
 
+
+	// удаляет элементы для которых функция пред вернет тру 
+	// ------ a predicate implemented as a function:
+	// bool single_digit (const int& value) { return (value<10); }
+	// ------ a predicate implemented as a class:
+	// struct is_odd {
+	//   bool operator() (const int& value) { return (value%2)==1; }
+	// };
     // template <class Predicate>
     // void remove_if (Predicate pred); // Remove elements fulfilling condition
 
+	// в каждой группе одинаковых элементов удаляет всё кроме первого, сравнение по порядку с предшествующим
+	// и сработает нормально только на отсортированном списке
     // void unique();
 
+	// сравнивает по два элемента через функцию и удаляет старший если она вернёт 1 (i , i-1) - удалит i
     // template <class BinaryPredicate>
     // void unique (BinaryPredicate binary_pred); // Remove duplicate values
 
+
+	// сливает два упорядоченных списка в один, в первом увел размер, а во втором размер = 0
     // void merge (list& x); // merge sorted list
 
+	// то же самое, только элементы сравниваются через функцию
     // template <class Compare>
     // void merge (list& x, Compare comp);
 
+	// сортирует по < , не вызывает конструкторы-деструкторы, просто двигает
     // void sort();
 	
+	// сортирует через функцию, не вызывает конструкторы-деструкторы, просто двигает
     // template <class Compare>
     // void sort (Compare comp);
 
+	// реверсировали реверсировали да не выреверсировали
     // void reverse();
 
 
@@ -429,13 +449,13 @@ public:
 /************* 7. NON-MEMBER OVERLOADS *************/
 
 // template <class T, class Alloc>
-//   bool operator== (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs); // comparing sizes, if match - comparing elements
+//   bool operator== (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs); 
 
 // template <class T, class Alloc>
 //   bool operator!= (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs);
 
 // template <class T, class Alloc>
-//   bool operator<  (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs); // lexicographical_compare 
+//   bool operator<  (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs); 
 
 // template <class T, class Alloc>
 //   bool operator<= (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs);
@@ -447,7 +467,7 @@ public:
 //   bool operator>= (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs);
 
 // template <class T, class Alloc>
-//   void swap (list<T,Alloc>& x, list<T,Alloc>& y); // containers exchange references to their data, without copy or move elements
+//   void swap (list<T,Alloc>& x, list<T,Alloc>& y); 
 
 } // namespace bracket
 

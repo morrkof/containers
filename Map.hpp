@@ -108,58 +108,30 @@ public:
 // };
 
 /************* 6. OBSERVERS *************/
-
+// ????????????????
 // key_compare key_comp() const;
 // value_compare value_comp() const;
 
 /************* 7. OPERATIONS *************/
+// ищет ключ и дделает итератор на найденное, если не найшлось возвращает итератор end 
+// iterator find (const key_type& k);
+// const_iterator find (const key_type& k) const;
 
-    // void splice (iterator position, list& x); // transfer elements from list to list
-    // void splice (iterator position, list& x, iterator i);
-    // void splice (iterator position, list& x, iterator first, iterator last);
+// возвращает 1 если элемент с таким ключом есть и 0 если нет
+// size_type count (const key_type& k) const;
 
-    // void remove (const value_type& val); // remove elements with specific value
-    // template <class Predicate>
-    // void remove_if (Predicate pred); // Remove elements fulfilling condition
+// нахождение ближайшего большего или точного ключа так чтоб ключ смог встать отсортированно
+// ловер - чтоб ключ встал до, аппер - после
+// iterator lower_bound (const key_type& k);
+// const_iterator lower_bound (const key_type& k) const;
+// iterator upper_bound (const key_type& k);
+// const_iterator upper_bound (const key_type& k) const;
 
-    // void unique();
-    // template <class BinaryPredicate>
-    // void unique (BinaryPredicate binary_pred); // Remove duplicate values
-
-    // void merge (list& x); // merge sorted list
-    // template <class Compare>
-    // void merge (list& x, Compare comp);
-
-    // void sort();
-    // template <class Compare>
-    // void sort (Compare comp);
-
-    // void reverse();
+// возвращает элемент? 
+// pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
+// pair<iterator,iterator>             equal_range (const key_type& k);
 
 
-
-/************* 7. NON-MEMBER OVERLOADS *************/
-
-// template <class T, class Alloc>
-//   bool operator== (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs); // comparing sizes, if match - comparing elements
-
-// template <class T, class Alloc>
-//   bool operator!= (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs);
-
-// template <class T, class Alloc>
-//   bool operator<  (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs); // lexicographical_compare 
-
-// template <class T, class Alloc>
-//   bool operator<= (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs);
-
-// template <class T, class Alloc>
-//   bool operator>  (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs);
-
-// template <class T, class Alloc>
-//   bool operator>= (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs);
-
-// template <class T, class Alloc>
-//   void swap (list<T,Alloc>& x, list<T,Alloc>& y); // containers exchange references to their data, without copy or move elements
 
 
 class Iterator {
