@@ -14,14 +14,14 @@ public:
     container_type _c;
 
     explicit queue (const container_type& ctnr = container_type()) { _c = ctnr; }
-    bool empty() const { return _c->empty(); }
-    size_type size() const { return _c->size(); }
-    value_type& front(){ return _c->front(); }
-    const value_type& front() const{ return _c->front(); }
-    value_type& back(){ return _c->back(); }
-    const value_type& back() const{ return _c->back(); }
-    void push (const value_type& val){ return _c->push_back(val); }
-    void pop(){ return _c->pop_front(); }
+    bool empty() const { return _c.empty(); }
+    size_type size() const { return _c.size(); }
+    value_type& front(){ return _c.front(); }
+    const value_type& front() const{ return _c.front(); }
+    value_type& back(){ return _c.back(); }
+    const value_type& back() const{ return _c.back(); }
+    void push (const value_type& val){ return _c.push_back(val); }
+    void pop(){ return _c.pop_front(); }
 
 }; // class bracket
 

@@ -448,26 +448,69 @@ public:
 
 /************* 7. NON-MEMBER OVERLOADS *************/
 
-// template <class T, class Alloc>
-//   bool operator== (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs); 
+template <class T, class Alloc>
+  bool operator== (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs)
+  {
+	  if (lhs.size() != rhs.size()) 
+			return false;
+	typename ft::list<T>::const_iterator it_lhs = lhs.begin();
+	typename ft::list<T>::const_iterator it_rhs = rhs.begin();
+	while (it_lhs != lhs.end() && it_rhs != rhs.end())
+	{
+		if(*it_lhs != *it_rhs)
+			return false;
+		it_lhs++;
+		it_rhs++;
+	}
+	return true;
+  }
 
-// template <class T, class Alloc>
-//   bool operator!= (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs);
+template <class T, class Alloc>
+  bool operator!= (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs)
+  {
+	  return !(rhs == lhs);
+  }
 
-// template <class T, class Alloc>
-//   bool operator<  (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs); 
+template <class T, class Alloc>
+  bool operator<  (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs)
+  {
+	typename ft::list<T>::const_iterator it_lhs = lhs.begin();
+	typename ft::list<T>::const_iterator it_rhs = rhs.begin();
+	while (it_lhs != lhs.end() && it_rhs != rhs.end())
+	{
+		if(*it_lhs < *it_rhs)
+			return true;
+		if(*it_lhs > *it_rhs)
+			return false;
+		it_lhs++;
+		it_rhs++;
+	}
+	return false;
+  }
 
-// template <class T, class Alloc>
-//   bool operator<= (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs);
+template <class T, class Alloc>
+  bool operator<= (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs)
+  {
+	  return (!(rhs < lhs));
+  }
 
-// template <class T, class Alloc>
-//   bool operator>  (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs);
+template <class T, class Alloc>
+  bool operator>  (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs)
+  {
+	  return (rhs < lhs);
+  }
 
-// template <class T, class Alloc>
-//   bool operator>= (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs);
+template <class T, class Alloc>
+  bool operator>= (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs)
+  {
+	  return (!(lhs < rhs));
+  }
 
-// template <class T, class Alloc>
-//   void swap (list<T,Alloc>& x, list<T,Alloc>& y); 
+template <class T, class Alloc>
+  void swap (list<T,Alloc>& x, list<T,Alloc>& y)
+  {
+	  x.swap(y);
+  }
 
 } // namespace bracket
 

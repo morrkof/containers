@@ -31,5 +31,5 @@ int main()
 	// test_list();
 	// test_map();
 	test_stack();
-	// test_queue();
+	test_queue();
 }

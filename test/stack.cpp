@@ -38,4 +38,21 @@ void test_stack()
 	std::cout << "Deleted element:" << std::endl << 
 	"std: top element = " << v_stack.top() << " , size = " << v_stack.size() <<
 	"  ft: top element = " << ft_stack.top() << " , size = " << ft_stack.size() << std::endl;
+
+	std::stack<std::string> v_stack2;
+	ft::stack<std::string> ft_stack2;
+
+	std::cout << "Relational operators:" << std::endl;
+	std::cout << "std : 1 == 2 ? " << (v_stack == v_stack2) << std::endl;
+	std::cout << "ft  : 1 == 2 ? " << (ft_stack == ft_stack2) << std::endl;
+	std::cout << "std : 1 != 2 ? " << (v_stack != v_stack2) << std::endl;
+	std::cout << "ft  : 1 != 2 ? " << (ft_stack != ft_stack2) << std::endl;
+	std::cout << "std : 1 > 2 ? " << (v_stack > v_stack2) << std::endl;
+	std::cout << "ft  : 1 > 2 ? " << (ft_stack > ft_stack2) << std::endl; // err
+	std::cout << "std : 1 >= 2 ? " << (v_stack >= v_stack2) << std::endl;
+	std::cout << "ft  : 1 >= 2 ? " << (ft_stack >= ft_stack2) << std::endl;
+	std::cout << "std : 1 < 2 ? " << (v_stack < v_stack2) << std::endl;
+	std::cout << "ft  : 1 < 2 ? " << (ft_stack < ft_stack2) << std::endl;
+	std::cout << "std : 1 <= 2 ? " << (v_stack <= v_stack2) << std::endl;
+	std::cout << "ft  : 1 <= 2 ? " << (ft_stack <= ft_stack2) << std::endl; // err
 }
