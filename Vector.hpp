@@ -618,6 +618,8 @@ public:
 	template <class T, class Alloc>
 	bool operator<  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
 	{
+		if (!lhs.size() || !rhs.size())
+			return (lhs.size() < rhs.size());
 		typename ft::vector<T>::const_iterator it_lhs = lhs.begin();
 		typename ft::vector<T>::const_iterator it_rhs = rhs.begin();
 		while (it_lhs != lhs.end() && it_rhs != rhs.end())

@@ -32,9 +32,9 @@ public:
 	typedef  value_type*		pointer;
     typedef const value_type*	const_pointer;
     typedef Iterator            iterator;
-    typedef Iterator            const_iterator;
+    typedef CIterator           const_iterator;
     typedef RIterator           reverse_iterator;
-    typedef RIterator           const_reverse_iterator;
+    typedef CRIterator          const_reverse_iterator;
     typedef ptrdiff_t			difference_type;
     typedef size_t				size_type;
 		
@@ -97,18 +97,16 @@ public:
 		_head = NULL; 
 		*this = x; 
 	}
-	/* need CLEAR and ASSIGN(range) */
-    // list& operator= (const list& x) 
-	// {
-	// 	// if (_head)
-	// 	// {
-	// 	// 	this->clear();
-	// 	// 	// deallocate cycle
-	// 	// }
-	// 	_size = x._size;
-	// 	this->assign(x.begin(), x.end()); // <-- allocate? 
-	// 	return *this;
-	// }
+
+    list& operator= (const list& x) 
+	{
+		if (_head)
+			this->clear();
+
+		_size = x._size;
+		this->assign(x.begin(), x.end());
+		return *this;
+	}
 
 	~list()
 	{
@@ -298,10 +296,19 @@ public:
 		x = tmp;
 	}
 
-    // void resize (size_type n, value_type val = value_type())
-	// {
-
-	// }
+    void resize (size_type n, value_type val = value_type())
+	{
+		if (n < _size)
+		{
+			for(size_type i = _size; i != n; i--)
+				this->pop_back();
+		}
+		else if (n > _size)
+		{
+			for(size_type i = _size; i != n; i++)
+				this->push_back(val);
+		}
+	}
 
     void clear()
 	{
@@ -322,12 +329,78 @@ public:
 // переносит элемент из х в наш контейнер на позицию, без конструкторов, тупо перенос, размер
 // меняется у всех контейнеров. 1- переносит все, 2- переносит один, 3- переносит диапазон
 // непонятно как менять размер у второго контейнера!!!1
-    // void splice (iterator position, list& x); // transfer elements from list to list
-    // void splice (iterator position, list& x, iterator i);
-    // void splice (iterator position, list& x, iterator first, iterator last);
+    void splice (iterator position, list& x)
+	{
+		Node *pos = _head->next;
+		for (Iterator it = this->begin(); it != position; it++)
+			pos = pos->next;
+		pos = pos->prev;
+		Node *tail = pos->next;
+		pos->next = x._head->next;
+		x._head->next->prev = pos;
+		x._head->prev->next = tail;
+		tail->prev = x._head->prev;
+		_size += x._size;
+		x._size = 0;
+		x._head->next = x._head;
+		x._head->prev = x._head;
+	}
+    void splice (iterator position, list& x, iterator i)
+	{
+		Node *pos = _head->next;
+		Node *src = x._head->next;
+		for (Iterator it = this->begin(); it != position; it++)
+			pos = pos->next;
+		pos = pos->prev;
+		Node *tail = pos->next;
+		for (Iterator it = x.begin(); it != i; it++)
+			src = src->next;
+		src->prev->next = src->next;
+		src->next->prev = src->prev;
+		pos->next = src;
+		src->next = tail;
+		tail->prev = src;
+		src->prev = pos;
+		_size++;
+		x._size--;
+	}
+    void splice (iterator position, list& x, iterator first, iterator last)
+	{
+		size_type len = 0;
+		for (Iterator it = first; it != last; it++)
+			len++;
+		Node *pos = _head->next;
+		Node *src_beg = x._head->next;
+		Node *src_end = x._head->next;
+		for (Iterator it = this->begin(); it != position; it++)
+			pos = pos->next;
+		pos = pos->prev;
+		Node *tail = pos->next;
+		for (Iterator it = x.begin(); it != first; it++)
+			src_beg = src_beg->next;
+		for (Iterator it = x.begin(); it != last; it++)
+			src_end = src_end->next;
+		src_end = src_end->prev;
+		pos->next = src_beg;
+		tail->prev = src_end;
+		src_beg->prev->next = src_end->next;
+		src_end->next->prev = src_beg->prev;
+		src_beg->prev = pos;
+		src_end->next = tail;
+		_size += len;
+		x._size -= len;
+	}
 
 // удаляет всё где валью = вал, вызывает деструктор и уменьшает размер
-    // void remove (const value_type& val); // remove elements with specific value
+    void remove (const value_type& val)
+	{
+		
+		for (Node *pos = _head->next; pos != _head; pos = pos->next)
+		{
+			if (*(pos->value) == val)
+				this->erase(iterator(pos));
+		}
+	}
 
 
 	// удаляет элементы для которых функция пред вернет тру 
@@ -337,6 +410,7 @@ public:
 	// struct is_odd {
 	//   bool operator() (const int& value) { return (value%2)==1; }
 	// };
+	
     // template <class Predicate>
     // void remove_if (Predicate pred); // Remove elements fulfilling condition
 
@@ -474,6 +548,8 @@ template <class T, class Alloc>
 template <class T, class Alloc>
   bool operator<  (const list<T,Alloc>& lhs, const list<T,Alloc>& rhs)
   {
+	if (!lhs.size() || !rhs.size())
+		return (lhs.size() < rhs.size());
 	typename ft::list<T>::const_iterator it_lhs = lhs.begin();
 	typename ft::list<T>::const_iterator it_rhs = rhs.begin();
 	while (it_lhs != lhs.end() && it_rhs != rhs.end())

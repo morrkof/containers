@@ -39,10 +39,16 @@ void test_queue()
 	"std: back element = " << v_queue.back() << " , size = " << v_queue.size() <<
 	"  ft: back element = " << ft_queue.back() << " , size = " << ft_queue.size() << std::endl;
 
+// add front
+
 	std::queue<std::string> v_queue2;
 	ft::queue<std::string> ft_queue2;
 
 	std::cout << "Relational operators:" << std::endl;
+	std::cout << "std : 2 < 1? " << (v_queue2 < v_queue) << std::endl;
+	std::cout << "ft  : 2 < 1? " << (ft_queue2 < ft_queue) << std::endl;
+
+
 	std::cout << "std : 1 == 2 ? " << (v_queue == v_queue2) << std::endl;
 	std::cout << "ft  : 1 == 2 ? " << (ft_queue == ft_queue2) << std::endl;
 	std::cout << "std : 1 != 2 ? " << (v_queue != v_queue2) << std::endl;
