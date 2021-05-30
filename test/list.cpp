@@ -20,6 +20,21 @@ std::ostream &operator<<(std::ostream &os, ft::list<T> &src)
 	return os;
 }
 
+bool compare_nocase (const std::string& first, const std::string& second)
+{
+  unsigned int i=0;
+  while ( (i<first.length()) && (i<second.length()) )
+  {
+    if (tolower(first[i])<tolower(second[i])) return true;
+    else if (tolower(first[i])>tolower(second[i])) return false;
+    ++i;
+  }
+  return ( first.length() < second.length() );
+}
+
+bool single_digit (const unsigned int& value) { return (value<10); }
+
+
 void test_list()
 {
 	std::cout << "\e[1;32m";
@@ -317,7 +332,34 @@ void test_list()
 	std::cout << "After remove: " << std::endl << std_rem << ft_rem;
 
 
+	std_rem.sort();
+	ft_rem.sort();
+	std::cout << "After sort: " << std::endl << std_rem << ft_rem;
 
+	std::list<std::string> std_sort_cmp;
+	ft::list<std::string> ft_sort_cmp;
+
+	std_sort_cmp.push_back("Hello");
+	std_sort_cmp.push_back("privet");
+	std_sort_cmp.push_back("Aaaa");
+	std_sort_cmp.push_back("world");
+	std_sort_cmp.push_back("begemot");
+	std_sort_cmp.push_back("Brrr");
+	ft_sort_cmp.push_back("Hello");
+	ft_sort_cmp.push_back("privet");
+	ft_sort_cmp.push_back("Aaaa");
+	ft_sort_cmp.push_back("world");
+	ft_sort_cmp.push_back("begemot");
+	ft_sort_cmp.push_back("Brrr");
+
+	std::cout << "Before compare sort: " << std::endl << std_sort_cmp << ft_sort_cmp;
+	std_sort_cmp.sort(compare_nocase);
+	ft_sort_cmp.sort(compare_nocase);
+	std::cout << "After compare sort: " << std::endl << std_sort_cmp << ft_sort_cmp;
+
+	std_sort_cmp.reverse();
+	ft_sort_cmp.reverse();
+	std::cout << "After reverse: " << std::endl << std_sort_cmp << ft_sort_cmp;
 	// print_beautiful_title("7. TESTING NON-MEMBER OVERLOADS:");
 
 }

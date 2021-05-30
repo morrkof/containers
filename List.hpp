@@ -19,6 +19,17 @@ private:
 		size_t _size;
 		Node *_head;
 
+
+	void swap_nodes(Node *first, Node *second)
+	{
+		first->prev->next = second;
+		second->next->prev = first;
+		first->next = second->next;
+		second->prev = first->prev;
+		first->prev = second;
+		second->next = first;
+	}
+
 public:
     class Iterator;
 	class CIterator;
@@ -133,7 +144,6 @@ public:
     bool empty() const { return (_size == 0 ? 1 : 0); }
     size_type size() const { return _size; }
     size_type max_size() const{ return (std::numeric_limits<size_type>::max() / sizeof(value_type)); }
-	// size_type max_size() const{ return _allocator.max_size(); }
     
 
 /************* 4. ELEMENT ACCESS *************/
@@ -394,11 +404,14 @@ public:
 // удаляет всё где валью = вал, вызывает деструктор и уменьшает размер
     void remove (const value_type& val)
 	{
-		
 		for (Node *pos = _head->next; pos != _head; pos = pos->next)
 		{
+			Node *prev = pos->prev;
 			if (*(pos->value) == val)
+			{
 				this->erase(iterator(pos));
+				pos = prev;
+			}
 		}
 	}
 
@@ -412,7 +425,10 @@ public:
 	// };
 	
     // template <class Predicate>
-    // void remove_if (Predicate pred); // Remove elements fulfilling condition
+    // void remove_if (Predicate pred)
+	// {
+
+	// }
 
 	// в каждой группе одинаковых элементов удаляет всё кроме первого, сравнение по порядку с предшествующим
 	// и сработает нормально только на отсортированном списке
@@ -430,15 +446,64 @@ public:
     // template <class Compare>
     // void merge (list& x, Compare comp);
 
-	// сортирует по < , не вызывает конструкторы-деструкторы, просто двигает
-    // void sort();
 	
-	// сортирует через функцию, не вызывает конструкторы-деструкторы, просто двигает
-    // template <class Compare>
-    // void sort (Compare comp);
 
-	// реверсировали реверсировали да не выреверсировали
-    // void reverse();
+    void sort()
+	{
+		size_type flag = 1;
+		while (flag)
+		{
+			flag = 0;
+			Node *cur = _head->next;
+			for (size_type i = 0; i < (_size -1); i++)
+			{
+				if (*(cur->next->value) < *(cur->value))
+				{
+					swap_nodes(cur, cur->next);
+					flag = 1;
+				}
+				else
+					cur = cur->next;
+			}
+		}
+	}
+	
+    template <class Compare>
+    void sort (Compare comp)
+	{
+		size_type flag = 1;
+		while (flag)
+		{
+			flag = 0;
+			Node *cur = _head->next;
+			for (size_type i = 0; i < (_size -1); i++)
+			{
+				if (comp(*(cur->next->value), *(cur->value)))
+				{
+					swap_nodes(cur, cur->next);
+					flag = 1;
+				}
+				else
+					cur = cur->next;
+			}
+		}
+	}
+
+    void reverse()
+	{
+		Node *cur = _head->next;
+		Node *tmp;
+		for (size_type i = 0; i < _size; i++)
+		{
+			tmp = cur->next;
+			cur->next = cur->prev;
+			cur->prev = tmp;
+			cur = tmp;
+		}
+		tmp = _head->next;
+		_head->next = _head->prev;
+		_head->prev = tmp;
+	}
 
 
 class Iterator {
