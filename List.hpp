@@ -469,12 +469,21 @@ public:
 	{
 		for (Node *xpos = x._head->next; xpos != x._head; xpos = xpos->next)
 		{
+			Node *prev = xpos->prev;
 			for (Node *pos = _head->next; pos != _head; pos = pos->next)
 			{
 				if (*(xpos->value) < *(pos->value))
 				{
 					this->insert(iterator(pos), *(xpos->value));
 					x.erase(iterator(xpos));
+					xpos = prev;
+					break;
+				}
+				else if (pos->next == _head)
+				{
+					this->push_back(*(xpos->value));
+					x.erase(iterator(xpos));
+					xpos = prev;
 					break;
 				}
 			}
@@ -488,12 +497,21 @@ public:
 	{
 		for (Node *xpos = x._head->next; xpos != x._head; xpos = xpos->next)
 		{
+			Node *prev = xpos->prev;
 			for (Node *pos = _head->next; pos != _head; pos = pos->next)
 			{
 				if (comp(*(xpos->value), *(pos->value)))
 				{
 					this->insert(iterator(pos), *(xpos->value));
 					x.erase(iterator(xpos));
+					xpos = prev;
+					break;
+				}
+				else if (pos->next == _head)
+				{
+					this->push_back(*(xpos->value));
+					x.erase(iterator(xpos));
+					xpos = prev;
 					break;
 				}
 			}

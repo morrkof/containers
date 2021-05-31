@@ -421,8 +421,8 @@ void test_list()
 		std_merge.push_front(i);
 		ft_merge.push_back(i);
 		ft_merge.push_front(i);
-		std_merge2.push_back(i - 2);
-		ft_merge2.push_back(i - 2);
+		std_merge2.push_back(i + 200);
+		ft_merge2.push_back(i + 200);
 	}
 	std_merge.sort();
 	std_merge2.sort();
