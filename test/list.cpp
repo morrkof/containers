@@ -34,6 +34,11 @@ bool compare_nocase (const std::string& first, const std::string& second)
 
 bool single_digit (const unsigned int& value) { return (value<10); }
 
+bool same_integral_part (double first, double second)
+{ return ( int(first)==int(second) ); }
+
+bool mycomparison (double first, double second)
+{ return ( int(first)<int(second) ); }
 
 void test_list()
 {
@@ -360,6 +365,104 @@ void test_list()
 	std_sort_cmp.reverse();
 	ft_sort_cmp.reverse();
 	std::cout << "After reverse: " << std::endl << std_sort_cmp << ft_sort_cmp;
+
+	std::list<int> std_remove_if;
+	ft::list<int> ft_remove_if;
+	for(size_t i = 6; i != 13; i++)
+	{
+		std_remove_if.push_back(i);
+		std_remove_if.push_front(i);
+		ft_remove_if.push_back(i);
+		ft_remove_if.push_front(i);
+	}
+	std::cout << "Before remove_if: " << std::endl << std_remove_if << ft_remove_if;
+	std_remove_if.remove_if(single_digit);
+	ft_remove_if.remove_if(single_digit);
+	std::cout << "After remove_if: " << std::endl << std_remove_if << ft_remove_if;
+
+	std::list<int> std_uniq(4, 10);
+	ft::list<int> ft_uniq(4, 10);
+	for(size_t i = 6; i != 13; i++)
+	{
+		std_uniq.push_back(i);
+		std_uniq.push_front(i);
+		ft_uniq.push_back(i);
+		ft_uniq.push_front(i);
+	}
+	std_uniq.sort();
+	ft_uniq.sort();
+	std::cout << "Before unique: " << std::endl << std_uniq << ft_uniq;
+	std_uniq.unique();
+	ft_uniq.unique();
+	std::cout << "After unique: " << std::endl << std_uniq << ft_uniq;
+
+	std::list<double> std_uniq_if;
+	ft::list<double> ft_uniq_if;
+	for(double i = 3.3; i < 13; i+=0.4)
+	{
+		std_uniq_if.push_back(i);
+		ft_uniq_if.push_back(i);
+	}
+	std_uniq_if.sort();
+	ft_uniq_if.sort();
+	std::cout << "Before unique: " << std::endl << std_uniq_if << ft_uniq_if;
+	std_uniq_if.unique(same_integral_part);
+	ft_uniq_if.unique(same_integral_part);
+	std::cout << "After unique: " << std::endl << std_uniq_if << ft_uniq_if;
+
+	{
+	std::list<int> std_merge(3, 7);
+	ft::list<int> ft_merge(3, 7);
+	std::list<int> std_merge2(2, 5);
+	ft::list<int> ft_merge2(2, 5);
+	for(size_t i = 6; i != 13; i++)
+	{
+		std_merge.push_back(i);
+		std_merge.push_front(i);
+		ft_merge.push_back(i);
+		ft_merge.push_front(i);
+		std_merge2.push_back(i - 2);
+		ft_merge2.push_back(i - 2);
+	}
+	std_merge.sort();
+	std_merge2.sort();
+	ft_merge.sort();
+	ft_merge2.sort();
+	std::cout << "Before merge 1st: " << std::endl << std_merge << ft_merge;
+	std::cout << "Before merge 2nd: " << std::endl << std_merge2 << ft_merge2;
+	std_merge.merge(std_merge2);
+	ft_merge.merge(ft_merge2);
+	std::cout << "After merge 1st: " << std::endl << std_merge << ft_merge;
+	std::cout << "After merge 2nd: " << std::endl << std_merge2 << ft_merge2;
+	}
+
+	{
+	std::list<double> std_merge(3, 7.3);
+	ft::list<double> ft_merge(3, 7.3);
+	std::list<double> std_merge2(2, 5.4);
+	ft::list<double> ft_merge2(2, 5.4);
+	for(double i = 2.3; i < 9.7; i++)
+	{
+		std_merge.push_back(i);
+		std_merge.push_front(i);
+		ft_merge.push_back(i);
+		ft_merge.push_front(i);
+		std_merge2.push_back(i - 0.6);
+		ft_merge2.push_back(i - 0.6);
+	}
+	std_merge.sort();
+	std_merge2.sort();
+	ft_merge.sort();
+	ft_merge2.sort();
+	std::cout << "Before merge(compare) 1st: " << std::endl << std_merge << ft_merge;
+	std::cout << "Before merge(compare) 2nd: " << std::endl << std_merge2 << ft_merge2;
+	std_merge.merge(std_merge2, mycomparison);
+	ft_merge.merge(ft_merge2, mycomparison);
+	std::cout << "After merge(compare) 1st: " << std::endl << std_merge << ft_merge;
+	std::cout << "After merge(compare) 2nd: " << std::endl << std_merge2 << ft_merge2;
+	}
+
+
 	// print_beautiful_title("7. TESTING NON-MEMBER OVERLOADS:");
 
 }

@@ -415,38 +415,90 @@ public:
 		}
 	}
 
-
-	// удаляет элементы для которых функция пред вернет тру 
-	// ------ a predicate implemented as a function:
-	// bool single_digit (const int& value) { return (value<10); }
-	// ------ a predicate implemented as a class:
-	// struct is_odd {
-	//   bool operator() (const int& value) { return (value%2)==1; }
-	// };
 	
-    // template <class Predicate>
-    // void remove_if (Predicate pred)
-	// {
-
-	// }
+    template <class Predicate>
+    void remove_if (Predicate pred)
+	{
+		for (Node *pos = _head->next; pos != _head; pos = pos->next)
+		{
+			Node *prev = pos->prev;
+			if (pred(*(pos->value)))
+			{
+				this->erase(iterator(pos));
+				pos = prev;
+			}
+		}
+	}
 
 	// в каждой группе одинаковых элементов удаляет всё кроме первого, сравнение по порядку с предшествующим
 	// и сработает нормально только на отсортированном списке
-    // void unique();
 	// как ремув, но если равняется
+    void unique()
+	{
+		for (Node *pos = _head->next->next; pos != _head; pos = pos->next)
+		{
+			Node *prev = pos->prev;
+			if (*(pos->value) == *(pos->prev->value))
+			{
+				this->erase(iterator(pos));
+				pos = prev;
+			}
+		}
+	}
+
 
 	// сравнивает по два элемента через функцию и удаляет старший если она вернёт 1 (i , i-1) - удалит i
-    // template <class BinaryPredicate>
-    // void unique (BinaryPredicate binary_pred); // Remove duplicate values
+    template <class BinaryPredicate>
+    void unique (BinaryPredicate binary_pred)
+	{
+		for (Node *pos = _head->next->next; pos != _head; pos = pos->next)
+		{
+			Node *prev = pos->prev;
+			if (binary_pred(*(pos->value), *(pos->prev->value)))
+			{
+				this->erase(iterator(pos));
+				pos = prev;
+			}
+		}
+	}
 
 
 	// сливает два упорядоченных списка в один, в первом увел размер, а во втором размер = 0
-    // void merge (list& x); // merge sorted list
-	// идти по первому, вставлять элементы из второго в нужные места
+	// идти по первому, insert элементы из второго в нужные места	
+    void merge (list& x)
+	{
+		for (Node *xpos = x._head->next; xpos != x._head; xpos = xpos->next)
+		{
+			for (Node *pos = _head->next; pos != _head; pos = pos->next)
+			{
+				if (*(xpos->value) < *(pos->value))
+				{
+					this->insert(iterator(pos), *(xpos->value));
+					x.erase(iterator(xpos));
+					break;
+				}
+			}
+		}
+	}
+
 
 	// то же самое, только элементы сравниваются через функцию
-    // template <class Compare>
-    // void merge (list& x, Compare comp);
+    template <class Compare>
+    void merge (list& x, Compare comp)
+	{
+		for (Node *xpos = x._head->next; xpos != x._head; xpos = xpos->next)
+		{
+			for (Node *pos = _head->next; pos != _head; pos = pos->next)
+			{
+				if (comp(*(xpos->value), *(pos->value)))
+				{
+					this->insert(iterator(pos), *(xpos->value));
+					x.erase(iterator(xpos));
+					break;
+				}
+			}
+		}
+	}
 
 	
 
