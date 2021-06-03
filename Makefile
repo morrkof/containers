@@ -1,7 +1,7 @@
 NAME = containers
 SRC = ./test/test.cpp ./test/vector.cpp ./test/list.cpp ./test/stack.cpp ./test/queue.cpp
 OBJ = $(SRC:.cpp=.o)
-CFLAGS = -Wall -Wextra -Werror  -std=c++98
+CFLAGS = #-Wall -Wextra -Werror  -std=c++98
 
 .PHONY: all clean fclean re
 

@@ -274,193 +274,218 @@ void test_list()
 	print_beautiful_title("6. TESTING OPERATIONS:");
 	// splice, remove, remove_if, unique, merge, sort, reverse
 
-	std::list<int> std_spl;
-	std::list<int> std_spl2;
-	ft::list<int> ft_spl;
-	ft::list<int> ft_spl2;
+	// std::list<int> std_spl;
+	// std::list<int> std_spl2;
+	// ft::list<int> ft_spl;
+	// ft::list<int> ft_spl2;
 
-	for(size_t i = 5; i != 9; i++)
-	{
-		std_spl.push_back(i);
-		ft_spl.push_back(i);
-	}
+	// for(size_t i = 5; i != 9; i++)
+	// {
+	// 	std_spl.push_back(i);
+	// 	ft_spl.push_back(i);
+	// }
 
-	for(size_t i = 42; i != 45; i++)
-	{
-		std_spl2.push_back(i);
-		ft_spl2.push_back(i);
-	}
+	// for(size_t i = 42; i != 45; i++)
+	// {
+	// 	std_spl2.push_back(i);
+	// 	ft_spl2.push_back(i);
+	// }
 
-	std_spl.splice(++std_spl.begin(), std_spl2);
-	ft_spl.splice(++ft_spl.begin(), ft_spl2);
-	std::cout << "Splice: " << std::endl << std_spl << ft_spl;
-	std::cout << "---2nd list after splice: " << std::endl << std_spl2 << ft_spl2;
-	for(size_t i = 777; i != 782; i++)
-	{
-		std_spl2.push_back(i);
-		ft_spl2.push_back(i);
-	}
-	std_spl.splice(--std_spl.end(), std_spl2);
-	ft_spl.splice(--ft_spl.end(), ft_spl2);
-	std::cout << "Splice: " << std::endl << std_spl << ft_spl;
-	std::cout << "---2nd list after splice: " << std::endl << std_spl2 << ft_spl2;
+	// std_spl.splice(++std_spl.begin(), std_spl2);
+	// ft_spl.splice(++ft_spl.begin(), ft_spl2);
+	// std::cout << "Splice: " << std::endl << std_spl << ft_spl;
+	// std::cout << "---2nd list after splice: " << std::endl << std_spl2 << ft_spl2;
+	// for(size_t i = 777; i != 782; i++)
+	// {
+	// 	std_spl2.push_back(i);
+	// 	ft_spl2.push_back(i);
+	// }
+	// std_spl.splice(--std_spl.end(), std_spl2);
+	// ft_spl.splice(--ft_spl.end(), ft_spl2);
+	// std::cout << "Splice: " << std::endl << std_spl << ft_spl;
+	// std::cout << "---2nd list after splice: " << std::endl << std_spl2 << ft_spl2;
 
-	for(size_t i = 13; i != 19; i++)
-	{
-		std_spl2.push_back(i);
-		ft_spl2.push_back(i);
-	}
+	// for(size_t i = 13; i != 19; i++)
+	// {
+	// 	std_spl2.push_back(i);
+	// 	ft_spl2.push_back(i);
+	// }
 
-	std_spl.splice(++std_spl.begin(), std_spl2, --std_spl2.end());
-	ft_spl.splice(++ft_spl.begin(), ft_spl2, --ft_spl2.end());
-	std::cout << "Splice (1 elem): " << std::endl << std_spl << ft_spl;
-	std::cout << "---2nd list after splice: " << std::endl << std_spl2 << ft_spl2;
+	// std_spl.splice(++std_spl.begin(), std_spl2, --std_spl2.end());
+	// ft_spl.splice(++ft_spl.begin(), ft_spl2, --ft_spl2.end());
+	// std::cout << "Splice (1 elem): " << std::endl << std_spl << ft_spl;
+	// std::cout << "---2nd list after splice: " << std::endl << std_spl2 << ft_spl2;
 
-	std_spl.splice(--std_spl.end(), std_spl2, ++std_spl2.begin(), --std_spl2.end());
-	ft_spl.splice(--ft_spl.end(), ft_spl2, ++ft_spl2.begin(), --ft_spl2.end());
-	std::cout << "Splice (range elem): " << std::endl << std_spl << ft_spl;
-	std::cout << "---2nd list after splice: " << std::endl << std_spl2 << ft_spl2;
+	// std_spl.splice(--std_spl.end(), std_spl2, ++std_spl2.begin(), --std_spl2.end());
+	// ft_spl.splice(--ft_spl.end(), ft_spl2, ++ft_spl2.begin(), --ft_spl2.end());
+	// std::cout << "Splice (range elem): " << std::endl << std_spl << ft_spl;
+	// std::cout << "---2nd list after splice: " << std::endl << std_spl2 << ft_spl2;
 
-	std::list<int> std_rem(5, 777);
-	ft::list<int> ft_rem(5, 777);
+	// std::list<int> std_rem(5, 777);
+	// ft::list<int> ft_rem(5, 777);
 
-	for(size_t i = 775; i != 780; i++)
-	{
-		std_rem.push_back(i);
-		std_rem.push_front(i);
-		ft_rem.push_back(i);
-		ft_rem.push_front(i);
-	}
-	std::cout << "Before remove: " << std::endl << std_rem << ft_rem;
-	std_rem.remove(777);
-	ft_rem.remove(777);
-	std::cout << "After remove: " << std::endl << std_rem << ft_rem;
+	// for(size_t i = 775; i != 780; i++)
+	// {
+	// 	std_rem.push_back(i);
+	// 	std_rem.push_front(i);
+	// 	ft_rem.push_back(i);
+	// 	ft_rem.push_front(i);
+	// }
+	// std::cout << "Before remove: " << std::endl << std_rem << ft_rem;
+	// std_rem.remove(777);
+	// ft_rem.remove(777);
+	// std::cout << "After remove: " << std::endl << std_rem << ft_rem;
 
 
-	std_rem.sort();
-	ft_rem.sort();
-	std::cout << "After sort: " << std::endl << std_rem << ft_rem;
+	// std_rem.sort();
+	// ft_rem.sort();
+	// std::cout << "After sort: " << std::endl << std_rem << ft_rem;
 
-	std::list<std::string> std_sort_cmp;
-	ft::list<std::string> ft_sort_cmp;
+	// std::list<std::string> std_sort_cmp;
+	// ft::list<std::string> ft_sort_cmp;
 
-	std_sort_cmp.push_back("Hello");
-	std_sort_cmp.push_back("privet");
-	std_sort_cmp.push_back("Aaaa");
-	std_sort_cmp.push_back("world");
-	std_sort_cmp.push_back("begemot");
-	std_sort_cmp.push_back("Brrr");
-	ft_sort_cmp.push_back("Hello");
-	ft_sort_cmp.push_back("privet");
-	ft_sort_cmp.push_back("Aaaa");
-	ft_sort_cmp.push_back("world");
-	ft_sort_cmp.push_back("begemot");
-	ft_sort_cmp.push_back("Brrr");
+	// std_sort_cmp.push_back("Hello");
+	// std_sort_cmp.push_back("privet");
+	// std_sort_cmp.push_back("Aaaa");
+	// std_sort_cmp.push_back("world");
+	// std_sort_cmp.push_back("begemot");
+	// std_sort_cmp.push_back("Brrr");
+	// ft_sort_cmp.push_back("Hello");
+	// ft_sort_cmp.push_back("privet");
+	// ft_sort_cmp.push_back("Aaaa");
+	// ft_sort_cmp.push_back("world");
+	// ft_sort_cmp.push_back("begemot");
+	// ft_sort_cmp.push_back("Brrr");
 
-	std::cout << "Before compare sort: " << std::endl << std_sort_cmp << ft_sort_cmp;
-	std_sort_cmp.sort(compare_nocase);
-	ft_sort_cmp.sort(compare_nocase);
-	std::cout << "After compare sort: " << std::endl << std_sort_cmp << ft_sort_cmp;
+	// std::cout << "Before compare sort: " << std::endl << std_sort_cmp << ft_sort_cmp;
+	// std_sort_cmp.sort(compare_nocase);
+	// ft_sort_cmp.sort(compare_nocase);
+	// std::cout << "After compare sort: " << std::endl << std_sort_cmp << ft_sort_cmp;
 
-	std_sort_cmp.reverse();
-	ft_sort_cmp.reverse();
-	std::cout << "After reverse: " << std::endl << std_sort_cmp << ft_sort_cmp;
+	// std_sort_cmp.reverse();
+	// ft_sort_cmp.reverse();
+	// std::cout << "After reverse: " << std::endl << std_sort_cmp << ft_sort_cmp;
 
-	std::list<int> std_remove_if;
-	ft::list<int> ft_remove_if;
+	// std::list<int> std_remove_if;
+	// ft::list<int> ft_remove_if;
+	// for(size_t i = 6; i != 13; i++)
+	// {
+	// 	std_remove_if.push_back(i);
+	// 	std_remove_if.push_front(i);
+	// 	ft_remove_if.push_back(i);
+	// 	ft_remove_if.push_front(i);
+	// }
+	// std::cout << "Before remove_if: " << std::endl << std_remove_if << ft_remove_if;
+	// std_remove_if.remove_if(single_digit);
+	// ft_remove_if.remove_if(single_digit);
+	// std::cout << "After remove_if: " << std::endl << std_remove_if << ft_remove_if;
+
+	// std::list<int> std_uniq(4, 10);
+	// ft::list<int> ft_uniq(4, 10);
+	// for(size_t i = 6; i != 13; i++)
+	// {
+	// 	std_uniq.push_back(i);
+	// 	std_uniq.push_front(i);
+	// 	ft_uniq.push_back(i);
+	// 	ft_uniq.push_front(i);
+	// }
+	// std_uniq.sort();
+	// ft_uniq.sort();
+	// std::cout << "Before unique: " << std::endl << std_uniq << ft_uniq;
+	// std_uniq.unique();
+	// ft_uniq.unique();
+	// std::cout << "After unique: " << std::endl << std_uniq << ft_uniq;
+
+	// std::list<double> std_uniq_if;
+	// ft::list<double> ft_uniq_if;
+	// for(double i = 3.3; i < 13; i+=0.4)
+	// {
+	// 	std_uniq_if.push_back(i);
+	// 	ft_uniq_if.push_back(i);
+	// }
+	// std_uniq_if.sort();
+	// ft_uniq_if.sort();
+	// std::cout << "Before unique: " << std::endl << std_uniq_if << ft_uniq_if;
+	// std_uniq_if.unique(same_integral_part);
+	// ft_uniq_if.unique(same_integral_part);
+	// std::cout << "After unique: " << std::endl << std_uniq_if << ft_uniq_if;
+
+	// {
+	// std::list<int> std_merge(3, 7);
+	// ft::list<int> ft_merge(3, 7);
+	// std::list<int> std_merge2(2, 5);
+	// ft::list<int> ft_merge2(2, 5);
+	// for(size_t i = 6; i != 13; i++)
+	// {
+	// 	std_merge.push_back(i);
+	// 	std_merge.push_front(i);
+	// 	ft_merge.push_back(i);
+	// 	ft_merge.push_front(i);
+	// 	std_merge2.push_back(i + 200);
+	// 	ft_merge2.push_back(i + 200);
+	// }
+	// std_merge.sort();
+	// std_merge2.sort();
+	// ft_merge.sort();
+	// ft_merge2.sort();
+	// std::cout << "Before merge 1st: " << std::endl << std_merge << ft_merge;
+	// std::cout << "Before merge 2nd: " << std::endl << std_merge2 << ft_merge2;
+	// std_merge.merge(std_merge2);
+	// ft_merge.merge(ft_merge2);
+	// std::cout << "After merge 1st: " << std::endl << std_merge << ft_merge;
+	// std::cout << "After merge 2nd: " << std::endl << std_merge2 << ft_merge2;
+	// }
+
+	// {
+	// std::list<double> std_merge(3, 7.3);
+	// ft::list<double> ft_merge(3, 7.3);
+	// std::list<double> std_merge2(2, 5.4);
+	// ft::list<double> ft_merge2(2, 5.4);
+	// for(double i = 2.3; i < 9.7; i++)
+	// {
+	// 	std_merge.push_back(i);
+	// 	std_merge.push_front(i);
+	// 	ft_merge.push_back(i);
+	// 	ft_merge.push_front(i);
+	// 	std_merge2.push_back(i - 0.6);
+	// 	ft_merge2.push_back(i - 0.6);
+	// }
+	// std_merge.sort();
+	// std_merge2.sort();
+	// ft_merge.sort();
+	// ft_merge2.sort();
+	// std::cout << "Before merge(compare) 1st: " << std::endl << std_merge << ft_merge;
+	// std::cout << "Before merge(compare) 2nd: " << std::endl << std_merge2 << ft_merge2;
+	// std_merge.merge(std_merge2, mycomparison);
+	// ft_merge.merge(ft_merge2, mycomparison);
+	// std::cout << "After merge(compare) 1st: " << std::endl << std_merge << ft_merge;
+	// std::cout << "After merge(compare) 2nd: " << std::endl << std_merge2 << ft_merge2;
+	// }
+
+	std::list<int> std_sw1;
+	std::list<int> std_sw2;
+	ft::list<int> ft_sw1;
+	ft::list<int> ft_sw2;
 	for(size_t i = 6; i != 13; i++)
 	{
-		std_remove_if.push_back(i);
-		std_remove_if.push_front(i);
-		ft_remove_if.push_back(i);
-		ft_remove_if.push_front(i);
-	}
-	std::cout << "Before remove_if: " << std::endl << std_remove_if << ft_remove_if;
-	std_remove_if.remove_if(single_digit);
-	ft_remove_if.remove_if(single_digit);
-	std::cout << "After remove_if: " << std::endl << std_remove_if << ft_remove_if;
-
-	std::list<int> std_uniq(4, 10);
-	ft::list<int> ft_uniq(4, 10);
-	for(size_t i = 6; i != 13; i++)
-	{
-		std_uniq.push_back(i);
-		std_uniq.push_front(i);
-		ft_uniq.push_back(i);
-		ft_uniq.push_front(i);
-	}
-	std_uniq.sort();
-	ft_uniq.sort();
-	std::cout << "Before unique: " << std::endl << std_uniq << ft_uniq;
-	std_uniq.unique();
-	ft_uniq.unique();
-	std::cout << "After unique: " << std::endl << std_uniq << ft_uniq;
-
-	std::list<double> std_uniq_if;
-	ft::list<double> ft_uniq_if;
-	for(double i = 3.3; i < 13; i+=0.4)
-	{
-		std_uniq_if.push_back(i);
-		ft_uniq_if.push_back(i);
-	}
-	std_uniq_if.sort();
-	ft_uniq_if.sort();
-	std::cout << "Before unique: " << std::endl << std_uniq_if << ft_uniq_if;
-	std_uniq_if.unique(same_integral_part);
-	ft_uniq_if.unique(same_integral_part);
-	std::cout << "After unique: " << std::endl << std_uniq_if << ft_uniq_if;
-
-	{
-	std::list<int> std_merge(3, 7);
-	ft::list<int> ft_merge(3, 7);
-	std::list<int> std_merge2(2, 5);
-	ft::list<int> ft_merge2(2, 5);
-	for(size_t i = 6; i != 13; i++)
-	{
-		std_merge.push_back(i);
-		std_merge.push_front(i);
-		ft_merge.push_back(i);
-		ft_merge.push_front(i);
-		std_merge2.push_back(i + 200);
-		ft_merge2.push_back(i + 200);
-	}
-	std_merge.sort();
-	std_merge2.sort();
-	ft_merge.sort();
-	ft_merge2.sort();
-	std::cout << "Before merge 1st: " << std::endl << std_merge << ft_merge;
-	std::cout << "Before merge 2nd: " << std::endl << std_merge2 << ft_merge2;
-	std_merge.merge(std_merge2);
-	ft_merge.merge(ft_merge2);
-	std::cout << "After merge 1st: " << std::endl << std_merge << ft_merge;
-	std::cout << "After merge 2nd: " << std::endl << std_merge2 << ft_merge2;
+		std_sw1.push_back(i);
+		std_sw1.push_front(i);
+		ft_sw1.push_back(i);
+		ft_sw1.push_front(i);
 	}
 
-	{
-	std::list<double> std_merge(3, 7.3);
-	ft::list<double> ft_merge(3, 7.3);
-	std::list<double> std_merge2(2, 5.4);
-	ft::list<double> ft_merge2(2, 5.4);
-	for(double i = 2.3; i < 9.7; i++)
-	{
-		std_merge.push_back(i);
-		std_merge.push_front(i);
-		ft_merge.push_back(i);
-		ft_merge.push_front(i);
-		std_merge2.push_back(i - 0.6);
-		ft_merge2.push_back(i - 0.6);
-	}
-	std_merge.sort();
-	std_merge2.sort();
-	ft_merge.sort();
-	ft_merge2.sort();
-	std::cout << "Before merge(compare) 1st: " << std::endl << std_merge << ft_merge;
-	std::cout << "Before merge(compare) 2nd: " << std::endl << std_merge2 << ft_merge2;
-	std_merge.merge(std_merge2, mycomparison);
-	ft_merge.merge(ft_merge2, mycomparison);
-	std::cout << "After merge(compare) 1st: " << std::endl << std_merge << ft_merge;
-	std::cout << "After merge(compare) 2nd: " << std::endl << std_merge2 << ft_merge2;
-	}
+
+	std::cout << std::endl << "............. SWAP:" << std::endl;
+	std::cout << "before swap:" << std::endl <<  "1st - " << std_sw1 << "2nd - " << std_sw2
+	<<  "1st - " << ft_sw1 << "2nd - " << ft_sw2 << std::endl ;
+	std_sw1.swap(std_sw2);
+	ft_sw1.swap(ft_sw2);
+	std::cout << "after swap (method):" << std::endl <<  "1st - " << std_sw1 << "2nd - " << std_sw2
+	<<  "1st - " << ft_sw1 << "2nd - " << ft_sw2 << std::endl ;
+	// std::swap(v_zero, v_full);
+	// ft::swap(ft_zero, ft_full);
+	// std::cout << "after swap (non-member):" << std::endl <<  "1st - " << ft_zero << "2nd - " << ft_full
+	// <<  "1st - " << v_zero << "2nd - " << v_full << std::endl ;
 
 
 	// print_beautiful_title("7. TESTING NON-MEMBER OVERLOADS:");

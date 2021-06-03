@@ -302,8 +302,8 @@ public:
     void swap (list& x)
 	{
 		list tmp = *this;
-		*this = x;
-		x = tmp;
+		// *this = x;
+		// x = tmp;
 	}
 
     void resize (size_type n, value_type val = value_type())
