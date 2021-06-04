@@ -77,7 +77,7 @@ public:
 
 
 /************* 2. ITERATORS *************/
-
+// бегин - первый элемент в порядке сортировки! 
     // iterator begin() {  }
     // const_iterator begin() const {  } 
     // iterator end()  {  }

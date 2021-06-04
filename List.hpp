@@ -109,8 +109,18 @@ public:
 		*this = x; 
 	}
 
-    list& operator= (const list& x) 
+    list& operator= (const list& src) 
 	{
+		// if (this != &src) {
+        // clear();
+        // iterator temp = src.begin();
+        // while (temp != src.end()) {
+        //     push_back(temp._current->value);
+        //     temp++;}
+        // }
+        // return *this;
+
+
 		if (_head)
 			this->clear();
 
@@ -579,7 +589,7 @@ public:
 
 
 class Iterator {
-private:
+public:
     Node * _current;
 public:
     Iterator() { _current = NULL; }
