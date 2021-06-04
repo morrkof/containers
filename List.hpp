@@ -105,26 +105,17 @@ public:
 
     list (const list& x) 
 	{ 
-		_head = NULL; 
+		_size = 0;
+		_head = new Node;
+		_head->prev = _head;
+		_head->next = _head;
+		_head->value = NULL;
 		*this = x; 
 	}
 
-    list& operator= (const list& src) 
+    list& operator= (const list& x) 
 	{
-		// if (this != &src) {
-        // clear();
-        // iterator temp = src.begin();
-        // while (temp != src.end()) {
-        //     push_back(temp._current->value);
-        //     temp++;}
-        // }
-        // return *this;
-
-
-		if (_head)
-			this->clear();
-
-		_size = x._size;
+		this->clear();
 		this->assign(x.begin(), x.end());
 		return *this;
 	}
@@ -134,7 +125,6 @@ public:
 		this->clear();
 		delete _head;
 	}
-
 
 /************* 2. ITERATORS *************/
 
@@ -170,13 +160,15 @@ public:
     void assign (InputIterator first, InputIterator last, 
 	typename ft::EnableIf<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type = 0)
 	{
-		this->clear();
+		// if (_head)
+			this->clear();
 		this->insert(this->begin(), first, last);
 	}
 
     void assign (size_type n, const value_type& val)
 	{
-		this->clear();
+		// if (_head)
+			this->clear();
 		this->insert(this->begin(), n, val);
 	}
 
@@ -311,9 +303,10 @@ public:
 	}
     void swap (list& x)
 	{
-		list tmp = *this;
-		// *this = x;
-		// x = tmp;
+		list tmp;
+		tmp = *this;
+		*this = x;
+		x = tmp;
 	}
 
     void resize (size_type n, value_type val = value_type())

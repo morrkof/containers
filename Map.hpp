@@ -26,7 +26,7 @@ public:
 
 	class ValueComp
 	{
-		friend class map;
+		// friend class map;
 		protected:
   			Compare comp;
 			value_compare (Compare c) : comp(c) {}  // constructed with map's comparison object
