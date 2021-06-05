@@ -98,10 +98,13 @@ public:
 			this->clear();
 			_allocator.deallocate(_data, _capacity);
 		}
-		_data = _allocator.allocate(x._capacity);
-		_capacity = x._capacity;
-		_size = x._size;
-		this->assign(x.begin(), x.end());
+		if (x._capacity)
+		{
+			_data = _allocator.allocate(x._capacity);
+			_capacity = x._capacity;
+			_size = x._size;
+			this->assign(x.begin(), x.end());
+		}
 		return *this;
 
 	}
@@ -110,6 +113,7 @@ public:
 	{
 		this->clear();
 		_allocator.deallocate(_data, _capacity);
+		_capacity = 0;
 	}
 
 /************* 2. ITERATORS *************/
@@ -234,11 +238,11 @@ public:
     	}
 		else
 		{
-			T *newdata = _allocator.allocate(1);
+			_capacity = 1;
+			T *newdata = _allocator.allocate(_capacity);
 			_allocator.construct(newdata, val);
 			_data = newdata;
-			_capacity = 1;
-			_size++;
+			_size = 1;
 		}
     }
 
