@@ -20,24 +20,24 @@ public:
     class CRIterator;
 	class ValueComp;
 
-    typedef Key                             key_type;
-    typedef T                               mapped_type;
-    typedef std::pair<const Key, T>         value_type;
-    typedef Compare                         key_compare;
-    typedef Alloc                           allocator_type;
-    typedef value_type&						reference;
-    typedef const value_type&				const_reference;
-	typedef typename allocator_type::pointer         pointer;
-    typedef typename allocator_type::const_pointer   const_pointer;
-    typedef Iterator                        iterator;
-    typedef CIterator                       const_iterator;
-    typedef RIterator                       reverse_iterator;
-    typedef CRIterator                      const_reverse_iterator;
-    typedef ptrdiff_t                       difference_type;
-    typedef size_t                          size_type;
-	typedef	ValueComp						value_compare;
+    typedef Key										key_type;
+    typedef T										mapped_type;
+    typedef std::pair<const Key, T>					value_type;
+    typedef Compare									key_compare;
+    typedef Alloc									allocator_type;
+    typedef value_type&								reference;
+    typedef const value_type&						const_reference;
+	typedef typename allocator_type::pointer		pointer;
+    typedef typename allocator_type::const_pointer	const_pointer;
+    typedef Iterator								iterator;
+    typedef CIterator								const_iterator;
+    typedef RIterator								reverse_iterator;
+    typedef CRIterator								const_reverse_iterator;
+    typedef ptrdiff_t								difference_type;
+    typedef size_t									size_type;
+	typedef	ValueComp								value_compare;
 
-	private:
+private:
     struct		Node {
         bool    red;
         Node    *parent;
@@ -69,7 +69,7 @@ public:
 		Node *_root;
 
 /************* 1. CONSTRUCTORS && DESTRUCTOR *************/
-	public:
+public:
     explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
 	{
 		_allocator = alloc;
@@ -130,18 +130,17 @@ public:
     
 
 /************* 4. ELEMENT ACCESS *************/
-/* ищет по k и возвращает референс на связанное с этим k значение
-** если не находит, то добавляет новый элемент с таким ключом и дефолтным значением и возвращает его
-** в случае неудачи увеличивает размер на 1 */
+
 mapped_type& operator[] (const key_type& k)
 {
-	
+	if (!count(k))
+		insert(std::make_pair(k, mapped_type()));
+	return (*(find(k))).second;
 }
 
 
 /************* 5. MODIFIERS *************/
-    // insert single element если такой ключ уже есть, то не вставляется а возвращается итератор на существующий
-    // элемент
+
 private:
 	Node *new_node(const value_type& val)
 	{
@@ -178,6 +177,7 @@ private:
 			// std::cout << "try to add " << val.first  <<  " : " << "  <--- " << cur->data->first << std::endl;
 			cur->left = add_node(cur->left, cur, val, added);
 		}
+		cur = balance(cur);
 		return cur;
 	}
 
@@ -196,6 +196,161 @@ private:
 		return (NULL);
 	}
 
+	Node *rotate_left(Node *top) // когда красный справа
+	{
+		// std::cout << "--- rotate left " << top->data->first << std::endl;
+		Node *child = top->right;
+		top->right = child->left;
+		if (top->right)
+			top->right->parent = top;
+		child->left = top;
+		child->parent = top->parent;
+		top->parent = child;
+		if (child->parent)
+		{
+			if (child->parent->left == top)
+				child->parent->left = child;
+			else
+				child->parent->right = child;
+		}
+		child->red = child->left->red;
+		child->left->red = 1;
+		return child;
+	}
+
+	Node *rotate_right(Node *top) // когда два красных один за другим
+	{
+		// std::cout << "--- rotate right " << top->data->first << std::endl;
+		Node *child = top->left;
+		top->left = child->right;
+		if (top->left)
+			top->left->parent = top;
+		child->right = top;
+		child->parent = top->parent;
+		top->parent = child;
+		if (child->parent)
+		{
+			if (child->parent->left == top)
+				child->parent->left = child;
+			else
+				child->parent->right = child;
+		}
+		child->red = child->right->red;
+		child->right->red = 1;
+		return child;
+	}
+
+	void	color_flip(Node *src) // когда два красных ребёнка у одного родителя
+	{
+		if (src->left && src->right)
+		{
+			// std::cout << "--- color flip " << src->data->first << std::endl;
+			src->red = !src->red;
+			src->left->red = !src->left->red;
+			src->right->red = !src->right->red;
+		}
+	}
+
+	Node *balance(Node *src)
+	{
+		if (src->right && src->right->red)
+			src = rotate_left(src);
+		if (src->left && src->left->red && src->left->left && src->left->left->red)
+			src = rotate_right(src);
+		if (src->left && src->left->red && src->right && src->right->red)
+			color_flip(src);
+		return src;
+	}
+
+	Node *move_right(Node *src)
+	{
+		color_flip(src);
+		if (src->left && src->left->left && src->left->left->red)
+		{
+			src = rotate_right(src);
+			color_flip(src);
+		}
+		return src;
+	}
+
+	Node *move_left(Node *src)
+	{
+		color_flip(src);
+		if (src->right && src->right->left && src->right->left->red)
+		{
+			src->right = rotate_right(src->right);
+			src = rotate_left(src);
+			color_flip(src);
+		}
+		return src;
+	}
+
+	void kill_node(Node *src)
+	{
+		_allocator.destroy(src->data);
+		_allocator.deallocate(src->data, 1);
+		src->left = NULL;
+		src->right = NULL;
+		if (src->parent)
+		{
+			if (src->parent->left == src)
+				src->parent->left = NULL;
+			else
+				src->parent->right = NULL;
+		}
+		src->parent = NULL;
+		_size--;
+		delete src;
+	}
+
+	Node *delete_min(Node *src)
+	{
+		if (!src->left)
+		{
+			kill_node(src);
+			return NULL;
+		}
+		if (!src->left->red && src->left->left && !src->left->left->red)
+			src = move_left(src);
+		src->left = delete_min(src->left);
+		return balance(src);
+	}
+
+	Node *delete_node(Node *src, const key_type& k)
+	{
+		if (!src)
+			return NULL;
+		if (_comparator(k, src->data->first) && src->left)
+		{
+			if (!src->left->red && src->left->left && !src->left->left->red)
+				src = move_left(src);
+			src->left = delete_node(src->left, k);
+		}
+		else
+		{
+			if (src->left && src->left->red)
+				src = rotate_right(src);
+			if (src->data->first == k && !src->right)
+			{
+				kill_node(src);
+				return NULL;
+			}
+			if (src->right && !src->right->red && src->right->left && !src->right->left->red)
+				src = move_right(src);
+			if (src->data->first == k && src->right)
+			{
+				// Node *tmp = src->right.min_node();
+				std::pair<const Key, T> *tmp_pair = (src->right->min_node())->data;
+				(src->right->min_node())->data = src->data;
+				src->data = tmp_pair;
+				src->right = delete_min(src->right);
+			}
+			else
+				src->right = delete_node(src->right, k);
+		}
+		return balance(src);
+	}
+
 public:
     std::pair<iterator,bool> insert (const value_type& val)
 	{
@@ -204,7 +359,6 @@ public:
 		return (std::make_pair(find(val.first), added));
 	}
 
-    // insert with hint позиция должна указывать на элемент предшествующий месту вставки, это просто подсказка для ускорения
     iterator insert (iterator position, const value_type& val)
 	{
 		bool added = 0;
@@ -216,20 +370,50 @@ public:
 		return find(val.first);
 	}
 
-    // range insert
     template <class InputIterator> 
     void insert (InputIterator first, InputIterator last)
 	{
 		for (InputIterator it = first; it != last; it++)
-			insert(*(it));
+			insert(*it);
 	}
 
-    //  удаляет либо на позиции, либо по ключу, либо диапазон
-    // void erase (iterator position);
-    // size_type erase (const key_type& k);
-    // void erase (iterator first, iterator last);
 
-    // void swap (map& x);
+    void erase (iterator position)
+	{
+		erase((*position).first);
+	}
+
+    size_type erase (const key_type& k)
+	{
+		if (find(k) == end())
+			return 0;
+		else
+			_root = delete_node(_root, k);
+		return 1;
+	}
+
+    void erase (iterator first, iterator last)
+	{
+		// пересчитывать через upper_bound и lower_bound
+		// или сделать массив указателей через файнд
+		// или списать у других
+		iterator it = first;
+		iterator tmp;
+		while (it != last)
+		{
+			tmp = it;
+			it++;
+			erase((*tmp).first);
+		}
+	}
+
+    void swap (map& x)
+	{
+		map tmp;
+		tmp = *this;
+		*this = x;
+		x = tmp;
+	}
 
 	void annihilate_node(Node *src)
 	{
@@ -239,25 +423,19 @@ public:
 			annihilate_node(src->left);
 		if (src->right)
 			annihilate_node(src->right);
-		_allocator.destroy(src->data);
-		_allocator.deallocate(src->data, 1);
-		src->left = NULL;
-		src->right = NULL;
-		src->parent = NULL;
-		delete src;
+		kill_node(src);
 	}
 
-    void clear() // removes all elements, leaving container size = 0
+    void clear()
 	{
 		annihilate_node(_root);
 		_root = NULL;
 		_size = 0;
 	}
 
-// };
 
 /************* 6. OBSERVERS *************/
-// возвращает функцию, которая сравнивает ключи / объекты с ключами
+
 key_compare key_comp() const { return _comparator; }
 value_compare value_comp() const { return new ValueComp(_comparator); }
 
@@ -293,7 +471,6 @@ const_iterator find (const key_type& k) const
 	return (CIterator(NULL));
 }
 
-// возвращает 1 если элемент с таким ключом есть и 0 если нет
 size_type count (const key_type& k) const
 {
 	if (this->find(k) == this->end())
@@ -302,8 +479,6 @@ size_type count (const key_type& k) const
 		return 1;
 }
 
-// нахождение ближайшего большего или точного ключа так чтоб ключ смог встать отсортированно
-// ловер - чтоб ключ встал до, аппер - после
 iterator lower_bound (const key_type& k)
 {
 	Node *tmp = _root;
@@ -320,35 +495,82 @@ iterator lower_bound (const key_type& k)
 	}
 	return iterator(result);
 }
-// const_iterator lower_bound (const key_type& k) const;
-// iterator upper_bound (const key_type& k);
-// const_iterator upper_bound (const key_type& k) const;
+
+const_iterator lower_bound (const key_type& k) const
+{
+	Node *tmp = _root;
+	Node *result = _root;
+	while (tmp)
+	{
+		if (_comparator(tmp->data->first, k))
+			tmp = tmp->right;
+		else
+		{
+			result = tmp;
+			tmp = tmp->left;
+		}
+	}
+	return const_iterator(result);
+}
+
+iterator upper_bound (const key_type& k)
+{
+	Node *tmp = _root;
+	Node *result = _root;
+	while (tmp)
+	{
+		if (_comparator(k, tmp->data->first))
+		{
+			result = tmp;
+			tmp = tmp->left;
+		}
+		else
+			tmp = tmp->right;
+	}
+	return iterator(result);
+}
+
+const_iterator upper_bound (const key_type& k) const
+{
+	Node *tmp = _root;
+	Node *result = _root;
+	while (tmp)
+	{
+		if (_comparator(k, tmp->data->first))
+		{
+			result = tmp;
+			tmp = tmp->left;
+		}
+		else
+			tmp = tmp->right;
+	}
+	return const_iterator(result);
+}
 
 std::pair<const_iterator,const_iterator> equal_range (const key_type& k) const
 {
 	const_iterator it = this->find(k);
-	return (std::make_pair(it, it));
+	return (std::make_pair(it, ++it));
 }
 
 std::pair<iterator,iterator>             equal_range (const key_type& k)
 {
 	iterator it = this->find(k);
-	return (std::make_pair(it, it));
+	return (std::make_pair(it, ++it));
 }
 
 
 class ValueComp
-	{
-		// friend class map;
-		protected:
-  			Compare comp;
-			ValueComp (Compare c) : comp(c) {}  // constructed with map's comparison object
-		public:
-			typedef bool result_type;
-			typedef value_type first_argument_type;
-			typedef value_type second_argument_type;
-			bool operator() (const value_type& x, const value_type& y) const  { return comp(x.first, y.first); }
-	};
+{
+protected:
+	Compare comp;
+	ValueComp (Compare c) : comp(c) {}
+public:
+	typedef bool result_type;
+	typedef value_type first_argument_type;
+	typedef value_type second_argument_type;
+	bool operator() (const value_type& x, const value_type& y) const  { return comp(x.first, y.first); }
+};
 
 class Iterator {
 private:
@@ -364,26 +586,18 @@ public:
     Iterator &operator++()  // prefix
 	{
 		if (_current->right)
-		{
-			// std::cout << "!!! current " << _current->data->first << std::endl;
 			_current = _current->right->min_node();
-			// std::cout << "!!! current " << _current->data->first << std::endl;
-		}
 		else
 		{
-			// std::cout << "!!! current " << _current->data->first << std::endl;
 			while (_current->parent && (_current->parent->left != _current))
 				_current = _current->parent;
 			_current = _current->parent;
-			// std::cout << "!!! current " << _current->data->first << std::endl;
 		}
 		return *this;
 	}
 
     Iterator &operator--() // prefix
 	{
-		// if (!_current)
-		// 	_current = _root.max_node();
 		if (_current->left)
 			_current = _current->left->max_node();
 		else
@@ -412,8 +626,6 @@ public:
     Iterator operator--(int) // postfix
 	{ 
 		Iterator tmp = *this;
-		// if (!_current)
-		// 	_current = _root.max_node();
 		if (_current->left)
 			_current = _current->left->max_node();
 		else
@@ -443,26 +655,18 @@ public:
     CIterator &operator++()  // prefix
 	{
 		if (_current->right)
-		{
-			// std::cout << "!!! current " << _current->data->first << std::endl;
 			_current = _current->right->min_node();
-			// std::cout << "!!! current " << _current->data->first << std::endl;
-		}
 		else
 		{
-			// std::cout << "!!! current " << _current->data->first << std::endl;
 			while (_current->parent && (_current->parent->left != _current))
 				_current = _current->parent;
 			_current = _current->parent;
-			// std::cout << "!!! current " << _current->data->first << std::endl;
 		}
 		return *this;
 	}
 
     CIterator &operator--() // prefix
 	{
-		// if (!_current)
-		// 	_current = _root.max_node();
 		if (_current->left)
 			_current = _current->left->max_node();
 		else
@@ -491,8 +695,6 @@ public:
     CIterator operator--(int) // postfix
 	{ 
 		CIterator tmp = *this;
-		// if (!_current)
-		// 	_current = _root.max_node();
 		if (_current->left)
 			_current = _current->left->max_node();
 		else
@@ -521,26 +723,18 @@ public:
     RIterator &operator--()  // prefix
 	{
 		if (_current->right)
-		{
-			// std::cout << "!!! current " << _current->data->first << std::endl;
 			_current = _current->right->min_node();
-			// std::cout << "!!! current " << _current->data->first << std::endl;
-		}
 		else
 		{
-			// std::cout << "!!! current " << _current->data->first << std::endl;
 			while (_current->parent && (_current->parent->left != _current))
 				_current = _current->parent;
 			_current = _current->parent;
-			// std::cout << "!!! current " << _current->data->first << std::endl;
 		}
 		return *this;
 	}
 
     RIterator &operator++() // prefix
 	{
-		// if (!_current)
-		// 	_current = _root.max_node();
 		if (_current->left)
 			_current = _current->left->max_node();
 		else
@@ -569,8 +763,6 @@ public:
     RIterator operator++(int) // postfix
 	{ 
 		RIterator tmp = *this;
-		// if (!_current)
-		// 	_current = _root.max_node();
 		if (_current->left)
 			_current = _current->left->max_node();
 		else
@@ -599,26 +791,19 @@ public:
     CRIterator &operator--()  // prefix
 	{
 		if (_current->right)
-		{
-			// std::cout << "!!! current " << _current->data->first << std::endl;
 			_current = _current->right->min_node();
-			// std::cout << "!!! current " << _current->data->first << std::endl;
-		}
 		else
 		{
-			// std::cout << "!!! current " << _current->data->first << std::endl;
 			while (_current->parent && (_current->parent->left != _current))
 				_current = _current->parent;
 			_current = _current->parent;
-			// std::cout << "!!! current " << _current->data->first << std::endl;
+
 		}
 		return *this;
 	}
 
     CRIterator &operator++() // prefix
 	{
-		// if (!_current)
-		// 	_current = _root.max_node();
 		if (_current->left)
 			_current = _current->left->max_node();
 		else
@@ -647,8 +832,6 @@ public:
     CRIterator operator++(int) // postfix
 	{ 
 		CRIterator tmp = *this;
-		// if (!_current)
-		// 	_current = _root.max_node();
 		if (_current->left)
 			_current = _current->left->max_node();
 		else
@@ -666,6 +849,14 @@ public:
 
 
 }; // class bracket
+
+
+template <class T, class Alloc>
+  void swap (map<T,Alloc>& x, map<T,Alloc>& y)
+  {
+	  x.swap(y);
+  }
+
 } // namespace bracket
 
 #endif
