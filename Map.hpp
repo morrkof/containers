@@ -359,7 +359,7 @@ public:
 
     bool empty() const { return (_size == 0 ? 1 : 0); }
     size_type size() const { return _size; }
-    size_type max_size() const{ return (std::numeric_limits<size_type>::max() / sizeof(value_type)); }
+    size_type max_size() const{ return (std::numeric_limits<difference_type>::max() / sizeof(value_type)); }
     
 
 /************* 4. ELEMENT ACCESS *************/

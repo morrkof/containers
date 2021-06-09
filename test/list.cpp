@@ -122,10 +122,11 @@ void test_list()
 		<< "    ft  | sz: " <<  std::setfill(' ') << std::setw(3) << ft_v.size() << std::endl;
     }
 
-	
+	std::list<int> max;
+	ft::list<int> ft_max;
     std::cout << std::endl << "............. MAX SIZE:" << std::endl;
-    std::cout << "std | MAX SIZE is " << v.max_size() << std::endl;
-    std::cout << "ft  | MAX SIZE is " << ft_v.max_size() << std::endl;
+    std::cout << "std | MAX SIZE is " << max.max_size() << std::endl;
+    std::cout << "ft  | MAX SIZE is " << ft_max.max_size() << std::endl;
 
     std::cout << std::endl << "............. EMPTY:" << std::endl;
     std::list<int> v_emp;
