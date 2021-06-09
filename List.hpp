@@ -160,15 +160,13 @@ public:
     void assign (InputIterator first, InputIterator last, 
 	typename ft::EnableIf<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type = 0)
 	{
-		// if (_head)
-			this->clear();
+		this->clear();
 		this->insert(this->begin(), first, last);
 	}
 
     void assign (size_type n, const value_type& val)
 	{
-		// if (_head)
-			this->clear();
+		this->clear();
 		this->insert(this->begin(), n, val);
 	}
 
@@ -339,9 +337,7 @@ public:
 	}
 
 /************* 6. OPERATIONS *************/
-// переносит элемент из х в наш контейнер на позицию, без конструкторов, тупо перенос, размер
-// меняется у всех контейнеров. 1- переносит все, 2- переносит один, 3- переносит диапазон
-// непонятно как менять размер у второго контейнера!!!1
+
     void splice (iterator position, list& x)
 	{
 		Node *pos = _head->next;
@@ -358,6 +354,7 @@ public:
 		x._head->next = x._head;
 		x._head->prev = x._head;
 	}
+
     void splice (iterator position, list& x, iterator i)
 	{
 		Node *pos = _head->next;
@@ -377,6 +374,7 @@ public:
 		_size++;
 		x._size--;
 	}
+
     void splice (iterator position, list& x, iterator first, iterator last)
 	{
 		size_type len = 0;
@@ -404,7 +402,6 @@ public:
 		x._size -= len;
 	}
 
-// удаляет всё где валью = вал, вызывает деструктор и уменьшает размер
     void remove (const value_type& val)
 	{
 		for (Node *pos = _head->next; pos != _head; pos = pos->next)
@@ -418,7 +415,6 @@ public:
 		}
 	}
 
-	
     template <class Predicate>
     void remove_if (Predicate pred)
 	{
@@ -433,9 +429,6 @@ public:
 		}
 	}
 
-	// в каждой группе одинаковых элементов удаляет всё кроме первого, сравнение по порядку с предшествующим
-	// и сработает нормально только на отсортированном списке
-	// как ремув, но если равняется
     void unique()
 	{
 		for (Node *pos = _head->next->next; pos != _head; pos = pos->next)
@@ -449,8 +442,6 @@ public:
 		}
 	}
 
-
-	// сравнивает по два элемента через функцию и удаляет старший если она вернёт 1 (i , i-1) - удалит i
     template <class BinaryPredicate>
     void unique (BinaryPredicate binary_pred)
 	{
@@ -465,9 +456,6 @@ public:
 		}
 	}
 
-
-	// сливает два упорядоченных списка в один, в первом увел размер, а во втором размер = 0
-	// идти по первому, insert элементы из второго в нужные места	
     void merge (list& x)
 	{
 		for (Node *xpos = x._head->next; xpos != x._head; xpos = xpos->next)
@@ -493,8 +481,6 @@ public:
 		}
 	}
 
-
-	// то же самое, только элементы сравниваются через функцию
     template <class Compare>
     void merge (list& x, Compare comp)
 	{
@@ -520,8 +506,6 @@ public:
 			}
 		}
 	}
-
-	
 
     void sort()
 	{

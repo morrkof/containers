@@ -60,88 +60,16 @@ private:
 				tmp = tmp->left;
 			return tmp;
 		}
-
 		};
 
 		Alloc _allocator;
 		key_compare _comparator;
+		value_compare _vcomporator;
 		size_t _size;
 		Node *_root;
 
-/************* 1. CONSTRUCTORS && DESTRUCTOR *************/
-public:
-    explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
-	{
-		_allocator = alloc;
-		_comparator = comp;
-		_size = 0;
-		_root = NULL;
-	}
+/* support functions */
 
-    template <class InputIterator>
-    map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), 
-	const allocator_type& alloc = allocator_type())
-	{
-		_allocator = alloc;
-		_comparator = comp;
-		_size = 0;
-		_root = NULL;
-		for (InputIterator it = first; it != last; it++)
-			insert(*(it));
-	}
-
-    map (const map& x) 
-	{
-		_allocator = x._allocator;
-		_comparator = x._comparator;
-		_size = 0;
-		_root = NULL;
-		*this = x;
-	}
-
-    map& operator= (const map& x)
-	{
-		this->clear();
-		this->insert(x.begin(), x.end());
-		return *this;
-	}
-
-    ~map() { this->clear(); }
-
-
-/************* 2. ITERATORS *************/
-
-    iterator begin() { return Iterator(_root->min_node()); }
-    const_iterator begin() const { return CIterator(_root->min_node()); } 
-    iterator end()  { return Iterator(NULL); }
-    const_iterator end() const { return CIterator(NULL); }
-    reverse_iterator rbegin() { return RIterator(_root->max_node()); }
-    const_reverse_iterator rbegin() const { return CRIterator(_root->max_node()); }
-    reverse_iterator rend() { return RIterator(NULL); }
-    const_reverse_iterator rend() const { return CRIterator(NULL); }
-
-
-
-/************* 3. CAPACITY *************/
-
-    bool empty() const { return (_size == 0 ? 1 : 0); }
-    size_type size() const { return _size; }
-    size_type max_size() const{ return (std::numeric_limits<size_type>::max() / sizeof(value_type)); }
-    
-
-/************* 4. ELEMENT ACCESS *************/
-
-mapped_type& operator[] (const key_type& k)
-{
-	if (!count(k))
-		insert(std::make_pair(k, mapped_type()));
-	return (*(find(k))).second;
-}
-
-
-/************* 5. MODIFIERS *************/
-
-private:
 	Node *new_node(const value_type& val)
 	{
 		Node *tmp = new Node;
@@ -158,7 +86,6 @@ private:
 	{
 		if (!cur)
 		{
-			// std::cout << "adding " << val.first  << std::endl;
 			added = 1;
 			_size++;
 			cur = new_node(val);
@@ -168,15 +95,9 @@ private:
 		if (cur->data->first == val.first)
 			return cur;
 		else if (_comparator(cur->data->first, val.first))
-		{
-			// std::cout << "try to add " << val.first  <<  " : " << cur->data->first << " ---> " << std::endl;
 			cur->right = add_node(cur->right, cur, val, added);
-		}
 		else
-		{
-			// std::cout << "try to add " << val.first  <<  " : " << "  <--- " << cur->data->first << std::endl;
 			cur->left = add_node(cur->left, cur, val, added);
-		}
 		cur = balance(cur);
 		return cur;
 	}
@@ -198,7 +119,6 @@ private:
 
 	Node *rotate_left(Node *top) // когда красный справа
 	{
-		// std::cout << "--- rotate left " << top->data->first << std::endl;
 		Node *child = top->right;
 		top->right = child->left;
 		if (top->right)
@@ -220,7 +140,6 @@ private:
 
 	Node *rotate_right(Node *top) // когда два красных один за другим
 	{
-		// std::cout << "--- rotate right " << top->data->first << std::endl;
 		Node *child = top->left;
 		top->left = child->right;
 		if (top->left)
@@ -235,6 +154,7 @@ private:
 			else
 				child->parent->right = child;
 		}
+		else _root = child;
 		child->red = child->right->red;
 		child->right->red = 1;
 		return child;
@@ -242,9 +162,10 @@ private:
 
 	void	color_flip(Node *src) // когда два красных ребёнка у одного родителя
 	{
-		if (src->left && src->right)
+		if (src->left && src->right && 
+		((src->left->red && src->right->red && !src->red) ||
+		(!src->left->red && !src->right->red && src->red)))
 		{
-			// std::cout << "--- color flip " << src->data->first << std::endl;
 			src->red = !src->red;
 			src->left->red = !src->left->red;
 			src->right->red = !src->right->red;
@@ -289,8 +210,7 @@ private:
 	{
 		_allocator.destroy(src->data);
 		_allocator.deallocate(src->data, 1);
-		src->left = NULL;
-		src->right = NULL;
+		
 		if (src->parent)
 		{
 			if (src->parent->left == src)
@@ -299,16 +219,25 @@ private:
 				src->parent->right = NULL;
 		}
 		src->parent = NULL;
-		_size--;
+		src->left = NULL;
+		src->right = NULL;
 		delete src;
+		_size--;
+		src = NULL;
 	}
 
 	Node *delete_min(Node *src)
 	{
 		if (!src->left)
 		{
+			Node *tmp = NULL;
+			if (src->right && !src->left)
+			{
+				tmp = src->right;
+				src->right->parent = src->parent;
+			}
 			kill_node(src);
-			return NULL;
+			return tmp;
 		}
 		if (!src->left->red && src->left->left && !src->left->left->red)
 			src = move_left(src);
@@ -332,14 +261,19 @@ private:
 				src = rotate_right(src);
 			if (src->data->first == k && !src->right)
 			{
+				Node *tmp = NULL;
+				if (src->left && !src->right)
+				{
+					tmp = src->left;
+					src->left->parent = src->parent;
+				}
 				kill_node(src);
-				return NULL;
+				return tmp;
 			}
 			if (src->right && !src->right->red && src->right->left && !src->right->left->red)
 				src = move_right(src);
 			if (src->data->first == k && src->right)
 			{
-				// Node *tmp = src->right.min_node();
 				std::pair<const Key, T> *tmp_pair = (src->right->min_node())->data;
 				(src->right->min_node())->data = src->data;
 				src->data = tmp_pair;
@@ -349,70 +283,6 @@ private:
 				src->right = delete_node(src->right, k);
 		}
 		return balance(src);
-	}
-
-public:
-    std::pair<iterator,bool> insert (const value_type& val)
-	{
-		bool added = 0;
-		_root = add_node(_root, NULL, val, added);
-		return (std::make_pair(find(val.first), added));
-	}
-
-    iterator insert (iterator position, const value_type& val)
-	{
-		bool added = 0;
-		Node *tmp = find_node(*(position).first);
-		if (_comparator(*(position).first, val.first))
-			tmp = add_node(tmp, tmp->parent, val, added);
-		else
-			_root = add_node(_root, NULL, val, added);
-		return find(val.first);
-	}
-
-    template <class InputIterator> 
-    void insert (InputIterator first, InputIterator last)
-	{
-		for (InputIterator it = first; it != last; it++)
-			insert(*it);
-	}
-
-
-    void erase (iterator position)
-	{
-		erase((*position).first);
-	}
-
-    size_type erase (const key_type& k)
-	{
-		if (find(k) == end())
-			return 0;
-		else
-			_root = delete_node(_root, k);
-		return 1;
-	}
-
-    void erase (iterator first, iterator last)
-	{
-		// пересчитывать через upper_bound и lower_bound
-		// или сделать массив указателей через файнд
-		// или списать у других
-		iterator it = first;
-		iterator tmp;
-		while (it != last)
-		{
-			tmp = it;
-			it++;
-			erase((*tmp).first);
-		}
-	}
-
-    void swap (map& x)
-	{
-		map tmp;
-		tmp = *this;
-		*this = x;
-		x = tmp;
 	}
 
 	void annihilate_node(Node *src)
@@ -426,6 +296,152 @@ public:
 		kill_node(src);
 	}
 
+
+/************* 1. CONSTRUCTORS && DESTRUCTOR *************/
+public:
+    explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
+	: _vcomporator(comp)
+	{
+		_allocator = alloc;
+		_comparator = comp;
+		_vcomporator = ValueComp(comp);
+		_size = 0;
+		_root = NULL;
+	}
+
+    template <class InputIterator>
+    map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), 
+	const allocator_type& alloc = allocator_type()) : _vcomporator(comp)
+	{
+		_allocator = alloc;
+		_comparator = comp;
+		_vcomporator = ValueComp(comp);
+		_size = 0;
+		_root = NULL;
+		for (InputIterator it = first; it != last; it++)
+			insert(*it);
+	}
+
+    map (const map& x) : _vcomporator(x._comparator)
+	{
+		_allocator = x._allocator;
+		_comparator = x._comparator;
+		_vcomporator = x._vcomporator;
+		_size = 0;
+		_root = NULL;
+		*this = x;
+	}
+
+    map& operator= (const map& x)
+	{
+		this->clear();
+		this->insert(x.begin(), x.end());
+		return *this;
+	}
+
+    ~map() { this->clear(); }
+
+
+/************* 2. ITERATORS *************/
+
+    iterator begin() { return Iterator(_root->min_node()); }
+    const_iterator begin() const { return CIterator(_root->min_node()); } 
+    iterator end()  { return Iterator(NULL); }
+    const_iterator end() const { return CIterator(NULL); }
+    reverse_iterator rbegin() { return RIterator(_root->max_node()); }
+    const_reverse_iterator rbegin() const { return CRIterator(_root->max_node()); }
+    reverse_iterator rend() { return RIterator(NULL); }
+    const_reverse_iterator rend() const { return CRIterator(NULL); }
+
+
+
+/************* 3. CAPACITY *************/
+
+    bool empty() const { return (_size == 0 ? 1 : 0); }
+    size_type size() const { return _size; }
+    size_type max_size() const{ return (std::numeric_limits<size_type>::max() / sizeof(value_type)); }
+    
+
+/************* 4. ELEMENT ACCESS *************/
+
+	mapped_type& operator[] (const key_type& k)
+	{
+		if (!count(k))
+			insert(std::make_pair(k, mapped_type()));
+		return (*(find(k))).second;
+	}
+
+
+/************* 5. MODIFIERS *************/
+
+    std::pair<iterator,bool> insert (const value_type& val)
+	{
+		bool added = 0;
+		_root = add_node(_root, NULL, val, added);
+		if (_root) _root->red = 0;
+		return (std::make_pair(find(val.first), added));
+	}
+
+    iterator insert (iterator position, const value_type& val)
+	{
+		bool added = 0;
+		Node *tmp = find_node((*position).first);
+		if (_comparator((*position).first, val.first))
+		{
+			tmp = add_node(tmp, tmp->parent, val, added);
+			while (tmp->parent)
+			{
+				tmp = balance(tmp);
+				tmp = tmp->parent;
+			}
+		}
+		else
+			_root = add_node(_root, NULL, val, added);
+		if (_root) _root->red = 0;
+		return find(val.first);
+	}
+
+    template <class InputIterator> 
+    void insert (InputIterator first, InputIterator last)
+	{
+		for (InputIterator it = first; it != last; it++)
+			insert(*it);
+	}
+
+    void erase (iterator position)
+	{
+		erase((*position).first);
+	}
+
+    size_type erase (const key_type& k)
+	{
+		if (find(k) == end())
+			return 0;
+		else
+		{
+			if (_root->right && _root->left && !_root->right->red && !_root->left->red)
+				_root->left->red = 1;
+			_root = delete_node(_root, k);
+		}
+		if (_root) _root->red = 0;
+		return 1;
+	}
+
+    void erase (iterator first, iterator last)
+	{
+		map<Key, T> tmp(first,last);
+		for (iterator it = tmp.begin(); it != tmp.end(); it++)
+			this->erase((*it).first);
+	}
+
+    void swap (map& x)
+	{
+		map tmp;
+		tmp = *this;
+		*this = x;
+		x = tmp;
+	}
+
     void clear()
 	{
 		annihilate_node(_root);
@@ -437,7 +453,7 @@ public:
 /************* 6. OBSERVERS *************/
 
 key_compare key_comp() const { return _comparator; }
-value_compare value_comp() const { return new ValueComp(_comparator); }
+value_compare value_comp() const { return _vcomporator; }
 
 /************* 7. OPERATIONS *************/
 
@@ -564,8 +580,8 @@ class ValueComp
 {
 protected:
 	Compare comp;
-	ValueComp (Compare c) : comp(c) {}
 public:
+	ValueComp (Compare c) : comp(c) {}
 	typedef bool result_type;
 	typedef value_type first_argument_type;
 	typedef value_type second_argument_type;
@@ -582,7 +598,8 @@ public:
     Iterator(Node * const ptr) { _current = ptr; }
     ~Iterator() {}
 
-    reference operator*() { return *(_current->data); }
+    reference operator*() { return *(_current->data);
+	}
     Iterator &operator++()  // prefix
 	{
 		if (_current->right)
@@ -611,7 +628,8 @@ public:
 
     Iterator operator++(int) // postfix
 	{ 
-		Iterator tmp = *this; 
+		Iterator tmp = *this;
+		
 		if (_current->right)
 			_current = _current->right->min_node();
 		else
@@ -845,8 +863,6 @@ public:
     bool operator==(CRIterator const &src) { return (this->_current == src._current); }
     bool operator!=(CRIterator const &src) { return (this->_current != src._current); }
 };
-
-
 
 }; // class bracket
 
